@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Compiled shared lib
+*.lib
+*.a
