@@ -17,3 +17,13 @@ enum Aes128Result {
     Result_DataNotAligned128 = 1,
     Result_NotImplemented = 2,
 };
+
+namespace crypto {
+
+enum class AesResult {
+    Success = 0,
+    NotAligned,
+    OutTooSmall
+};
+
+}

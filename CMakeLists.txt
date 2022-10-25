@@ -8,5 +8,28 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED yes)
 
 # Add source files to lib.
-add_library(AesLib STATIC "include/Aes128.h" "source/AesCbc128.cpp" "include/AesCbc128.h" "include/AesCommon128.h" "source/AesCtr128.cpp" "include/AesCtr128.h" "source/AesEcb128.cpp" "include/AesEcb128.h" "include/AesLookupTables.h" "source/AesXts128.cpp" "include/AesXts128.h")
+add_library(AesLib STATIC
+    "include/AesLib/detail/AesByteSwap.h"
+#    "include/AesLib/detail/AesDecryptImpl128.cpu-amd64.h" "source'AesDecryptImpl128.cpu-amd64.cpp"
+    "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source'AesDecryptImpl128.cpu-generic.cpp"
+    "include/AesLib/detail/AesDecryptImpl128.h"
+#    "include/AesLib/detail/AesEncryptImpl128.cpu-amd64.h" "source'AesEncryptImpl128.cpu-amd64.cpp"
+    "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source'AesEncryptImpl128.cpu-generic.cpp"
+    "include/AesLib/detail/AesEncryptImpl128.h"
+    "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"
+#    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-amd64.cpp"
+    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
+    "include/AesLib/detail/AesXtsTweakHandler.h" "source/detail/AesXtsTweakHandler.cpp"
+
+    "include/AesLib/Aes128.h"
+    "include/AesLib/AesCommon.h"
+    "include/AesLib/AesLookupTables.h"
+    "include/AesLib/AesEcbDecryptor128.h" "source/AesEcbDecryptor128.cpp"
+    "include/AesLib/AesEcbEncryptor128.h" "source/AesEcbEncryptor128.cpp"
+    "include/AesLib/AesCbcDecryptor128.h" "source/AesCbcDecryptor128.cpp"
+    "include/AesLib/AesCbcEncryptor128.h" "source/AesCbcEncryptor128.cpp"
+    "include/AesLib/AesXtsDecryptor128.h" "source/AesXtsDecryptor128.cpp"
+    "include/AesLib/AesXtsEncryptor128.h" "source/AesXtsEncryptor128.cpp"
+    "include/AesLib/AesCtr128.h" "source/AesCtr128.cpp" 
+)
 target_include_directories(AesLib PUBLIC include)
