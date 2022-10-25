@@ -1,4 +1,5 @@
-#include <AesCbcEncryptor128.h>
+#include <AesLib/AesCbcEncryptor128.h>
+#include <AesLib/detail/AesXorBlock128.h>
 
 namespace crypto {
 
@@ -27,12 +28,10 @@ void AesCbcEncryptor128::Finalize() {
 
 crypto::AesResult AesCbcEncryptor128::EncryptData(void* pOut, size_t outSize, const void* pIn, size_t size) {
     uint8_t tmp[Aes128BlockLength];
-    uint8_t iv_buf[Aes128BlockLength];
     size_t pos = 0;
 
     /* Assert that data is aligned to 0x10 bytes */
     if(size % Aes128BlockLength != 0) {
-        printf("Error: Size must be aligned to 0x10 bytes");
         return crypto::AesResult::NotAligned;
     }
 
@@ -42,9 +41,7 @@ crypto::AesResult AesCbcEncryptor128::EncryptData(void* pOut, size_t outSize, co
         std::memcpy(tmp, static_cast<const uint8_t*>(pIn) + pos, Aes128BlockLength);
 
         /* XOR Input with IV */
-        for(uint8_t i = 0; i < 4; i++) {
-            reinterpret_cast<uint32_t*>(tmp)[i] ^= reinterpret_cast<uint32_t*>(m_AesIv)[i];
-        }
+        crypto::detail::AesXorBlock128(tmp, tmp, m_AesIv);
 
         /* Encrypt data with key */
         m_EcbEncrypter.EncryptBlock(static_cast<uint8_t*>(pOut) + pos, tmp);

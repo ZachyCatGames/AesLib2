@@ -4,6 +4,20 @@
 namespace crypto {
 namespace detail {
 
+AesXtsTweakHandler::AesXtsTweakHandler() = default;
+
+AesXtsTweakHandler::AesXtsTweakHandler(const void* pKey, size_t keySize) :
+    m_Encryptor(pKey, keySize)
+{
+    /* ... */
+}
+
+AesXtsTweakHandler::~AesXtsTweakHandler() = default;
+
+void AesXtsTweakHandler::Initialize(const void* pKey, size_t keySize) {
+    m_Encryptor.Initialize(pKey, keySize);
+}
+
 void AesXtsTweakHandler::SetupTweak(void* pOut, size_t curSector, size_t sectAddr) {
     uint64_t* xtsTweak = static_cast<uint64_t*>(pOut);
 

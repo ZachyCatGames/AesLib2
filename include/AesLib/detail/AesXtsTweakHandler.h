@@ -8,6 +8,7 @@ class AesXtsTweakHandler {
 public:
     AesXtsTweakHandler();
     AesXtsTweakHandler(const void* pKey, size_t keySize);
+    ~AesXtsTweakHandler();
 
     void Initialize(const void* pKey, size_t keySize);
 

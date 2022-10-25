@@ -5,21 +5,19 @@
 namespace crypto {
 namespace detail {
 
-class AesEcbDecryptor128 {
+class AesDecryptImpl128 {
 public:
-    AesEcbDecryptor128();
-    AesEcbDecryptor128(const void* pKey, size_t keySize);
-    ~AesEcbDecryptor128();
+    AesDecryptImpl128();
+    AesDecryptImpl128(const void* pKey, size_t keySize);
+    ~AesDecryptImpl128();
 
     void Initialize(const void* pKey, size_t keySize);
     void Finalize();
 
-    crypto::AesResult DecryptBlock(void* pOut, const void* pIn);
-    crypto::AesResult DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
+    void DecryptBlock(void* pOut, const void* pIn);
 
 private:
     void ExpandKeyImpl();
-    void DecryptBlockImpl(uint8_t* pOut, const uint8_t* pIn);
 
 private:
     uint8_t m_RoundKeys[11][16];

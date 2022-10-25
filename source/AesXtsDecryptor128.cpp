@@ -51,9 +51,6 @@ crypto::AesResult AesXtsDecryptor128::DecryptData(void* pOut, size_t outSize, co
 
         /* XOR Tweak with output */
         crypto::detail::AesXorBlock128(pOutData + pos, tmp, xtsTweak);
-        for(uint8_t i = 0; i < Aes128BlockLength; i++) {
-            pOutData[i+pos] = tmp[i] ^ xtsTweak[i];
-        }
 
         /* Multiply tweak */
         crypto::detail::GFMul(xtsTweak, xtsTweak);
