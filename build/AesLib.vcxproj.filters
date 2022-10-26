@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\detail\AesDecryptImpl128.cpu-amd64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\detail\AesEncryptImpl128.cpu-amd64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\detail\AesGFMul.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\detail\AesXorBlock128.cpu-amd64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\detail\AesSimdKeyExpansion.cpu-amd64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\detail\AesXtsTweakHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\AesEcbDecryptor128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\AesEcbEncryptor128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\AesCbcDecryptor128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\AesCbcEncryptor128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\AesXtsDecryptor128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\AesXtsEncryptor128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\source\AesCtr128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesByteSwap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesDecryptImpl128.cpu-amd64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesDecryptImpl128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesEncryptImpl128.cpu-amd64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesEncryptImpl128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesGFMul.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesXorBlock128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesSimdKeyExpansion.cpu-amd64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\detail\AesXtsTweakHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\Aes128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesLookupTables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesEcbDecryptor128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesEcbEncryptor128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesCbcDecryptor128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesCbcEncryptor128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesXtsDecryptor128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesXtsEncryptor128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\include\AesLib\AesCtr128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Zachary\Desktop\Projects\AesLib\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{95FF3835-338E-3DFD-9B15-EA1088194F45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EF135B18-2DE2-3716-8742-56F85D8534D9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

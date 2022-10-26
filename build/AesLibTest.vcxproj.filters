@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\test_program\test_Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\test_program\test_AesEcbTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Zachary\Desktop\Projects\AesLib\test_program\test_AesCbcTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\test_program\test_TestData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\test_program\test_EcbEncData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\test_program\test_AesEcbTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Zachary\Desktop\Projects\AesLib\test_program\test_AesCbcTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Zachary\Desktop\Projects\AesLib\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{95FF3835-338E-3DFD-9B15-EA1088194F45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EF135B18-2DE2-3716-8742-56F85D8534D9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
