@@ -18,10 +18,10 @@ public:
     void EncryptBlock(void* pOut, const void* pIn);
 
 private:
-    void ExpandKeyImpl();
+    void ExpandKeyImpl(const void* pKey);
 
 private:
-    __m128i m_RoundKeys[11];
+    uint8_t m_RoundKeyStorage[20][16];
 };
 
 } // namespace detail

@@ -18,11 +18,10 @@ public:
     void DecryptBlock(void* pOut, const void* pIn);
 
 private:
-    void ExpandKeyImpl();
+    void ExpandKeyImpl(const void* pKey);
 
 private:
-    __m128i m_RoundKeys[11];
-    __m128i m_InvRoundKeys[11];
+    uint8_t m_InvRoundKeyStorage[13][16];
 };
 
 } // namespace detail

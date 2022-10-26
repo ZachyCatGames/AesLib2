@@ -1,3 +1,3 @@
 #pragma once
 
-#include <AesLib/detail/AesEncryptImpl128.cpu-generic.h>
+#include <AesLib/detail/AesEncryptImpl128.cpu-amd64.h>

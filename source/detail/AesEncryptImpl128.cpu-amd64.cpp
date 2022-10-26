@@ -1,4 +1,5 @@
 #include <AesLib/detail/AesEncryptImpl128.cpu-amd64.h>
+#include <AesLib/detail/AesSimdKeyExpansion.cpu-amd64.h>
 
 namespace crypto {
 namespace detail {
@@ -12,50 +13,65 @@ AesEncryptImpl128::AesEncryptImpl128(const void* pKey, size_t keySize) {
 AesEncryptImpl128::~AesEncryptImpl128() = default;
 
 void AesEncryptImpl128::Initialize(const void* pKey, size_t keySize) {
-    std::memcpy(&m_RoundKeys[0], pKey, 0x10);
-    this->ExpandKeyImpl();
+    this->ExpandKeyImpl(pKey);
 }
 
 void AesEncryptImpl128::Finalize() {
     /* ... */
 }
 
-#define AES_128_key_exp(k, rcon) aes_128_key_expansion(k, _mm_aeskeygenassist_si128(k, rcon))
+void AesEncryptImpl128::ExpandKeyImpl(const void* pKey) { 
+    ALIGN(16) __m128i roundKey;
 
-__m128i aes_128_key_expansion(__m128i key, __m128i keygened){
-    keygened = _mm_shuffle_epi32(keygened, _MM_SHUFFLE(3,3,3,3));
-    key = _mm_xor_si128(key, _mm_slli_si128(key, 4));
-    key = _mm_xor_si128(key, _mm_slli_si128(key, 4));
-    key = _mm_xor_si128(key, _mm_slli_si128(key, 4));
-    return _mm_xor_si128(key, keygened);
-}
-
-void AesEncryptImpl128::ExpandKeyImpl() { 
-    m_RoundKeys[1]  = AES_128_key_exp(m_RoundKeys[0], 0x01);
-    m_RoundKeys[2]  = AES_128_key_exp(m_RoundKeys[1], 0x02);
-    m_RoundKeys[3]  = AES_128_key_exp(m_RoundKeys[2], 0x04);
-    m_RoundKeys[4]  = AES_128_key_exp(m_RoundKeys[3], 0x08);
-    m_RoundKeys[5]  = AES_128_key_exp(m_RoundKeys[4], 0x10);
-    m_RoundKeys[6]  = AES_128_key_exp(m_RoundKeys[5], 0x20);
-    m_RoundKeys[7]  = AES_128_key_exp(m_RoundKeys[6], 0x40);
-    m_RoundKeys[8]  = AES_128_key_exp(m_RoundKeys[7], 0x80);
-    m_RoundKeys[9]  = AES_128_key_exp(m_RoundKeys[8], 0x1B);
-    m_RoundKeys[10] = AES_128_key_exp(m_RoundKeys[9], 0x36);
+    /* Generate keys. */
+    roundKey  = _mm_loadu_si128(static_cast<const __m128i*>(pKey));
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[0]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x01);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[1]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x02);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[2]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x04);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[3]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x08);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[4]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x10);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[5]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x20);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[6]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x40);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[7]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x80);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[8]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x1B);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[9]), roundKey);
+    roundKey = AES_128_key_exp(roundKey, 0x36);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[10]), roundKey);
 }
 
 void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
-    constexpr const uint8_t roundCount = 9;
+    constexpr uint8_t roundCount = 9;
+    ALIGN(16) __m128i roundKey;
+    ALIGN(16) __m128i block;
+
+    /* Load data. */
+    block = _mm_loadu_si128(static_cast<const __m128i*>(pIn));
 
     /* Add first roundkey */
-    __m128i block = _mm_xor_si128(*static_cast<const __m128i*>(pIn), m_RoundKeys[0]);
+    roundKey = _mm_loadu_si128(reinterpret_cast<const __m128i*>(m_RoundKeyStorage[0]));
+    block = _mm_xor_si128(block, roundKey);
 
     /* Add roundkeys */
     for(uint8_t round = 1; round <= roundCount; round++) {
-        block = _mm_aesenc_si128(block, m_RoundKeys[round]);
+        roundKey = _mm_loadu_si128(reinterpret_cast<const __m128i*>(m_RoundKeyStorage[round]));
+        block = _mm_aesenc_si128(block, roundKey);
     }
 
     /* Add last roundkey */
-    *static_cast<__m128i*>(pOut) = _mm_aesenclast_si128(block, m_RoundKeys[10]);
+    roundKey = _mm_loadu_si128(reinterpret_cast<const __m128i*>(m_RoundKeyStorage[10]));
+    block = _mm_aesenclast_si128(block, roundKey);
+
+    /* Save encrypted data. */
+    _mm_storeu_si128(static_cast<__m128i*>(pOut), block);
 }
 
 } // namespace detail
