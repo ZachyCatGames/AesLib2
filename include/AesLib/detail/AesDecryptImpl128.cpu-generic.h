@@ -21,6 +21,7 @@ private:
 
 private:
     uint8_t m_RoundKeys[11][16];
+    uint32_t m_InvRoundKeys[11][4];
 };
 
 } // namespace detail

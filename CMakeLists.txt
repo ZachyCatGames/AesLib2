@@ -16,15 +16,15 @@ add_compile_options(-mtune=native -march=native)
 # Add source files to lib.
 add_library(AesLib STATIC
     "include/AesLib/detail/AesByteSwap.h"
-    "include/AesLib/detail/AesDecryptImpl128.cpu-amd64.h" "source/detail/AesDecryptImpl128.cpu-amd64.cpp"
-#    "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
+#    "include/AesLib/detail/AesDecryptImpl128.cpu-amd64.h" "source/detail/AesDecryptImpl128.cpu-amd64.cpp"
+    "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesDecryptImpl128.h"
-    "include/AesLib/detail/AesEncryptImpl128.cpu-amd64.h" "source/detail/AesEncryptImpl128.cpu-amd64.cpp"
-#    "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
+#    "include/AesLib/detail/AesEncryptImpl128.cpu-amd64.h" "source/detail/AesEncryptImpl128.cpu-amd64.cpp"
+    "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesEncryptImpl128.h"
     "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"
-    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-amd64.cpp"
-#    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
+#    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-amd64.cpp"
+    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
     "include/AesLib/detail/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/AesSimdKeyExpansion.cpu-amd64.cpp"
     "include/AesLib/detail/AesXtsTweakHandler.h" "source/detail/AesXtsTweakHandler.cpp"
 

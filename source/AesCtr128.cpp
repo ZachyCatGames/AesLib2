@@ -18,14 +18,10 @@ void AesCtr128::SetCounter(const void* pCtr, size_t ctrSize) {
 }
 
 crypto::AesResult AesCtr128::CryptBlock(void* pOut, const void* pIn) {
-    uint8_t ctr[Aes128BlockLength];
     uint8_t tmp[Aes128BlockLength];
 
-    /* Copy iv to ctr */
-    std::memcpy(ctr, m_AesCounter, Aes128BlockLength);
-
     /* Encrypt CTR with key */
-    m_EcbEncrypter.EncryptBlock(tmp, ctr);
+    m_EcbEncrypter.EncryptBlock(tmp, m_AesCounter);
 
     /* XOR Data with encrypted CTR */
     crypto::detail::AesXorBlock128(pOut, pIn, tmp);

@@ -14,19 +14,19 @@ void TestAesEcbMode() {
     crypto::AesEcbDecryptor128 decryptor(crypto::test::g_TestKey1, 0x10);
 
     /* Encrypt data. */
-    encryptor.EncryptData(buf.data(), dataSize, crypto::test::g_TestData, dataSize);
+    encryptor.EncryptData(buf.data(), dataSize, crypto::test::g_TestData, 0x10);
 
     /* Check data. */
-    if(std::memcmp(buf.data(), crypto::test::g_EcbEncData, dataSize)) {
+    if(std::memcmp(buf.data(), crypto::test::g_EcbEncData, 0x10)) {
         std::printf("Enc Data Different!\n");
         return;
     }
 
     /* Decrypt data. */
-    decryptor.DecryptData(buf.data(), dataSize, buf.data(), dataSize);
+    decryptor.DecryptData(buf.data(), dataSize, buf.data(), 0x10);
 
     /* Check data. */
-    if(std::memcmp(buf.data(), crypto::test::g_TestData, dataSize)) {
+    if(std::memcmp(buf.data(), crypto::test::g_TestData, 0x10)) {
         std::printf("Dec Data Different!\n");
         return;
     }
