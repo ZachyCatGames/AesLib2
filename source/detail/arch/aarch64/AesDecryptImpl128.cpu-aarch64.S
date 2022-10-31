@@ -1,13 +1,13 @@
 .text
 
-.global _ZN6crypto6detail17AesDecryptImpl12810InitializeEPKvm
-.global _ZN6crypto6detail17AesDecryptImpl12812DecryptBlockEPvPKv
+.global _ZN6crypto6detail4arch7aarch6417AesDecryptImpl12810InitializeEPKvm
+.global _ZN6crypto6detail4arch7aarch6417AesDecryptImpl12812DecryptBlockEPvPKv
 
-// void crypto::detail::AesDecryptImpl128::Initialize(const void* pKey, size_t keySize);
+// void crypto::detail::arch::aarch64::AesDecryptImpl128::Initialize(const void* pKey, size_t keySize);
 // X0[in] crypto::detail::AesDecryptImpl128* this
 // X1[in] const void* pKey
 // X2[in] size_t keySize
-_ZN6crypto6detail17AesDecryptImpl12810InitializeEPKvm:
+_ZN6crypto6detail4arch7aarch6417AesDecryptImpl12810InitializeEPKvm:
     stp     fp, lr, [sp, #-0x10]!
     str     X0, [sp, #-0x10]!               // Save this
     ldr     Q0, [X1]                        // Save provided key.
@@ -36,12 +36,12 @@ _ZN6crypto6detail17AesDecryptImpl12810InitializeEPKvm:
     ldp     fp, lr, [sp], #0x10
     ret
 
-// void crypto::detail::AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn);
+// void crypto::detail::arch::aarch64::AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn);
 // X0[in] crypto::detail::AesDecryptImpl128* this
 // X1[in] void* pOut
 // X2[in] const void* pIn
 // Note: m_RoundKeys is at offset 0x0 in crypto::detail::AesDecryptImpl128
-_ZN6crypto6detail17AesDecryptImpl12812DecryptBlockEPvPKv:
+_ZN6crypto6detail4arch7aarch6417AesDecryptImpl12812DecryptBlockEPvPKv:
     ldr     Q0, [X2]                        // Load input.
     ldr     Q1, [X0, #0xA0]                 // Load first key.
     aesd    v0.16B, v1.16B                  // Perform first round.

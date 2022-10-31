@@ -1,6 +1,7 @@
 #pragma once
 #include <AesLib/AesCommon.h>
 #include <AesLib/AesEcbEncryptor128.h>
+#include <AesLib/detail/IAesEncryptor128.h>
 #include <cstdint>
 
 namespace crypto {

@@ -1,5 +1,7 @@
 #pragma once
-#include <AesLib/detail/AesDecryptImpl128.h>
+#include <AesLib/AesCommon.h>
+#include <AesLib/detail/IAesDecryptor128.h>
+#include <memory>
 
 namespace crypto {
 
@@ -16,7 +18,7 @@ public:
     crypto::AesResult DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
 
 private:
-    crypto::detail::AesDecryptImpl128 m_Impl;
+    std::unique_ptr<crypto::detail::IAesDecryptor128> m_pImpl;
 };
 
 } // namespace crypto

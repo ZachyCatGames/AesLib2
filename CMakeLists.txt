@@ -15,23 +15,34 @@ include_directories(include)
 
 add_compile_options(-mcpu=cortex-a57+crypto)
 
+# Add -maes on x86
+
+# 
+
 # Add source files to lib.
 add_library(AesLib STATIC
+#    "include/AesLib/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.S"
+#    "include/AesLib/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.S"
+#    "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/aarch64/AesImplBuilder.cpu-aarch64.cpp"
+#    "include/AesLib/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.h" "source/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.cpp"
+
+    "include/AesLib/detail/arch/amd64/AesDecryptImpl128.cpu-amd64.h" "source/detail/arch/amd64/AesDecryptImpl128.cpu-amd64.cpp"
+    "include/AesLib/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.h" "source/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.cpp"
+    "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/amd64/AesImplBuilder.cpu-amd64.cpp"
+    "include/AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.cpp"
+    "include/AesLib/detail/AesXorBlock128.h" "source/detail/arch/amd64/AesXorBlock128.cpu-amd64.cpp"
+    "include/AesLib/detail/arch/amd64/ExtensionSupport.cpu-amd64.h" "source/detail/arch/amd64/ExtensionSupport.cpu-amd64.cpp"
+
+    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
+
     "include/AesLib/detail/AesByteSwap.h"
-    "include/AesLib/detail/AesDecryptImpl128.cpu-aarch64.h" "source/detail/AesDecryptImpl128.cpu-aarch64.cpp" "source/detail/AesDecryptImpl128.cpu-aarch64.S"
-#    "include/AesLib/detail/AesDecryptImpl128.cpu-amd64.h" "source/detail/AesDecryptImpl128.cpu-amd64.cpp"
-#    "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
-    "include/AesLib/detail/AesDecryptImpl128.h"
-    "include/AesLib/detail/AesEncryptImpl128.cpu-aarch64.h" "source/detail/AesEncryptImpl128.cpu-aarch64.cpp" "source/detail/AesEncryptImpl128.cpu-aarch64.S"
-#    "include/AesLib/detail/AesEncryptImpl128.cpu-amd64.h" "source/detail/AesEncryptImpl128.cpu-amd64.cpp"
-#    "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
-    "include/AesLib/detail/AesEncryptImpl128.h"
+    "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
+    "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesExpandKeyImpl128.h" "source/detail/AesExpandKeyImpl128.cpp"
     "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"
-#    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-amd64.cpp"
-    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
-#    "include/AesLib/detail/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/AesSimdKeyExpansion.cpu-amd64.cpp"
     "include/AesLib/detail/AesXtsTweakHandler.h" "source/detail/AesXtsTweakHandler.cpp"
+    "include/AesLib/detail/IAesDecryptor128.h"
+    "include/AesLib/detail/IAesEncryptor128.h"
 
     "include/AesLib/Aes128.h"
     "include/AesLib/AesCommon.h"

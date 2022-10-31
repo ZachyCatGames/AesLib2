@@ -1,12 +1,13 @@
 #include <AesLib/AesEcbEncryptor128.h>
 #include <AesLib/AesLookupTables.h>
+#include <AesLib/detail/AesImplBuilder.h>
 
 namespace crypto {
 
 AesEcbEncryptor128::AesEcbEncryptor128() = default;
 
 AesEcbEncryptor128::AesEcbEncryptor128(const void* pKey, size_t keySize) :
-    m_Impl(pKey, keySize)
+    m_pImpl(crypto::detail::BuilderEncryptorImpl(pKey, keySize))
 {
     /* ... */
 }
@@ -14,7 +15,7 @@ AesEcbEncryptor128::AesEcbEncryptor128(const void* pKey, size_t keySize) :
 AesEcbEncryptor128::~AesEcbEncryptor128() = default;
 
 void AesEcbEncryptor128::Initialize(const void* pKey, size_t keySize) {
-    m_Impl.Initialize(pKey, keySize);
+    m_pImpl = crypto::detail::BuilderEncryptorImpl(pKey, keySize);
 }
 
 void AesEcbEncryptor128::Finalize() {
@@ -22,7 +23,7 @@ void AesEcbEncryptor128::Finalize() {
 }
 
 crypto::AesResult AesEcbEncryptor128::EncryptBlock(void* pOut, const void* pIn) {
-    m_Impl.EncryptBlock(static_cast<uint8_t*>(pOut), static_cast<const uint8_t*>(pIn));
+    m_pImpl->EncryptBlock(static_cast<uint8_t*>(pOut), static_cast<const uint8_t*>(pIn));
 
     return crypto::AesResult::Success;
 }
@@ -38,7 +39,7 @@ crypto::AesResult AesEcbEncryptor128::EncryptData(void* pOut, size_t outSize, co
 
     size_t blockCount = inSize / 0x10;
     for(size_t i = 0; i < blockCount; ++i) {
-        m_Impl.EncryptBlock(static_cast<uint8_t*>(pOut) + i * 0x10, static_cast<const uint8_t*>(pIn) + i * 0x10);
+        m_pImpl->EncryptBlock(static_cast<uint8_t*>(pOut) + i * 0x10, static_cast<const uint8_t*>(pIn) + i * 0x10);
     }
 
     return crypto::AesResult::Success;

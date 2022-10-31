@@ -1,13 +1,14 @@
 #include <AesLib/AesXtsDecryptor128.h>
 #include <AesLib/detail/AesGFMul.h>
 #include <AesLib/detail/AesXorBlock128.h>
+#include <AesLib/detail/AesImplBuilder.h>
 
 namespace crypto {
 
 AesXtsDecryptor128::AesXtsDecryptor128() = default;
 
 AesXtsDecryptor128::AesXtsDecryptor128(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) :
-    m_Decryptor(pKey1, key1Size),
+    m_pDecryptor(crypto::detail::BuilderDecryptorImpl(pKey1, key1Size)),
     m_TweakHandler(pKey2, key2Size),
     m_SectorSize(sectSize)
 {
@@ -17,13 +18,13 @@ AesXtsDecryptor128::AesXtsDecryptor128(const void* pKey1, size_t key1Size, const
 AesXtsDecryptor128::~AesXtsDecryptor128() = default;
 
 void AesXtsDecryptor128::Initialize(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) {
-    m_Decryptor.Initialize(pKey1, key1Size);
+    m_pDecryptor = crypto::detail::BuilderDecryptorImpl(pKey1, key1Size);
     m_TweakHandler.Initialize(pKey2, key2Size);
     m_SectorSize = sectSize;
 }
 
 void AesXtsDecryptor128::Finalize() {
-    m_Decryptor.Finalize();
+    m_pDecryptor->Finalize();
 }
 
 crypto::AesResult AesXtsDecryptor128::DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr) {
@@ -47,7 +48,7 @@ crypto::AesResult AesXtsDecryptor128::DecryptData(void* pOut, size_t outSize, co
         crypto::detail::AesXorBlock128(tmp, xtsTweak, pInData + pos);
 
         /* Encrypt Data with key1 */
-        m_Decryptor.DecryptBlock(tmp, tmp);
+        m_pDecryptor->DecryptBlock(tmp, tmp);
 
         /* XOR Tweak with output */
         crypto::detail::AesXorBlock128(pOutData + pos, tmp, xtsTweak);

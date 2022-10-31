@@ -1,6 +1,6 @@
 #include <AesLib/AesCommon.h>
-#include <AesLib/detail/AesEncryptImpl128.h>
 #include <AesLib/detail/AesXtsTweakHandler.h>
+#include <AesLib/detail/IAesEncryptor128.h>
 #include <cstdint>
 #include <cstddef>
 
@@ -18,7 +18,7 @@ public:
     crypto::AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr);
 
 private:
-    crypto::detail::AesEncryptImpl128 m_Encryptor;
+    std::unique_ptr<crypto::detail::IAesEncryptor128> m_pEncryptor;
     crypto::detail::AesXtsTweakHandler m_TweakHandler;
     size_t m_SectorSize;
 };

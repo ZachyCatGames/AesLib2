@@ -1,10 +1,12 @@
 #pragma once
-#include <AesLib/AesCommon.h>
+#include <cstddef>
+#include <cstdint>
 #include <AesLib/detail/IAesDecryptor128.h>
-#include <cstdio>
 
 namespace crypto {
 namespace detail {
+namespace arch {
+namespace aarch64 {
 
 class AesDecryptImpl128 : public crypto::detail::IAesDecryptor128 {
 public:
@@ -18,12 +20,10 @@ public:
     virtual void DecryptBlock(void* pOut, const void* pIn) override;
 
 private:
-    void ExpandKeyImpl();
-
-private:
-    uint8_t m_RoundKeys[11][16];
-    uint32_t m_InvRoundKeys[11][4];
+    uint32_t m_RoundKeys[11 * 4][4];
 };
 
+} // namespace aarch64
+} // namespace arch
 } // namespace detail
 } // namespace crypto

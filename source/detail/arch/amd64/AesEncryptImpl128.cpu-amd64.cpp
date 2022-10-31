@@ -1,8 +1,10 @@
-#include <AesLib/detail/AesEncryptImpl128.cpu-amd64.h>
-#include <AesLib/detail/AesSimdKeyExpansion.cpu-amd64.h>
+#include <AesLib/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.h>
+#include <AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h>
 
 namespace crypto {
 namespace detail {
+namespace arch {
+namespace amd64 {
 
 AesEncryptImpl128::AesEncryptImpl128() = default;
 
@@ -74,5 +76,7 @@ void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
     _mm_storeu_si128(static_cast<__m128i*>(pOut), block);
 }
 
+} // namespace amd64
+} // namespace arch
 } // namespace detail
 } // namespace crypto

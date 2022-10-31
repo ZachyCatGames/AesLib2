@@ -1,5 +1,6 @@
 #include <AesLib/AesCbcDecryptor128.h>
 #include <AesLib/detail/AesXorBlock128.h>
+#include <AesLib/detail/AesImplBuilder.h>
 
 namespace crypto {
 

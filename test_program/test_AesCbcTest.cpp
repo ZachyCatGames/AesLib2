@@ -11,7 +11,7 @@ void TestAesCbcMode() {
     constexpr auto dataSize = sizeof(crypto::test::g_TestData);
     crypto::AesCbcEncryptor128 encryptor(crypto::test::g_TestKey1, 0x10, crypto::test::g_TestKey2, 0x10);
     crypto::AesCbcDecryptor128 decryptor(crypto::test::g_TestKey1, 0x10, crypto::test::g_TestKey2, 0x10);
-    std::vector<uint8_t> buf;
+    std::vector<uint8_t> buf(dataSize);
 
     /* Encrypt data. */
     encryptor.EncryptData(buf.data(), dataSize, crypto::test::g_TestData, dataSize);
