@@ -1,8 +1,8 @@
 #pragma once
 #include <AesLib/AesCommon.h>
-#include <AesLib/AesEcbEncryptor128.h>
 #include <AesLib/detail/IAesEncryptor128.h>
 #include <cstdint>
+#include <memory>
 
 namespace crypto {
 
@@ -13,7 +13,6 @@ public:
     ~AesCtr128();
 
     void Initialize(const void* pKey, size_t keySize, const void* pCtr, size_t ctrSize);
-
     void Finalize();
 
     /* Set counter. */
@@ -26,7 +25,7 @@ public:
     crypto::AesResult CryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
 
 private:
-    crypto::AesEcbEncryptor128 m_EcbEncrypter;
+    std::unique_ptr<crypto::detail::IAesEncryptor128> m_pEncryptor;
     uint8_t m_AesCounter[16];
 };
 

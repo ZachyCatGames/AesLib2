@@ -1,5 +1,6 @@
 #pragma once
-#include <AesLib/AesEcbEncryptor128.h>
+#include <AesLib/detail/IAesEncryptor128.h>
+#include <memory>
 
 namespace crypto {
 namespace detail {
@@ -15,7 +16,7 @@ public:
     void SetupTweak(void* pOut, size_t curSector, size_t sectAddr);
 
 private:
-    crypto::AesEcbEncryptor128 m_Encryptor;
+    std::unique_ptr<crypto::detail::IAesEncryptor128> m_pEncryptor;
 };
 
 } // namespace detail

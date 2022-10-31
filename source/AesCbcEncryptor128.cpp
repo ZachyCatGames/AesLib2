@@ -1,12 +1,13 @@
 #include <AesLib/AesCbcEncryptor128.h>
 #include <AesLib/detail/AesXorBlock128.h>
+#include <AesLib/detail/AesImplBuilder.h>
 
 namespace crypto {
 
 AesCbcEncryptor128::AesCbcEncryptor128() = default;
 
 AesCbcEncryptor128::AesCbcEncryptor128(const void* pKey, size_t keySize, const void* pIv, size_t ivSize) :
-    m_EcbEncrypter(pKey, keySize)
+    m_pEncryptor(crypto::detail::BuildEncryptorImpl(pKey, keySize))
 {
     std::memcpy(m_AesIv, pIv, 0x10);
 }
@@ -15,7 +16,7 @@ AesCbcEncryptor128::~AesCbcEncryptor128() = default;
 
 void AesCbcEncryptor128::Initialize(const void* pKey, size_t keySize, const void* pIv, size_t ivSize) {
     /* Initialize ECB encrypter. */
-    m_EcbEncrypter.Initialize(pKey, keySize);
+    m_pEncryptor = crypto::detail::BuildEncryptorImpl(pKey, keySize);
 
     /* Copy iv. */
     std::memcpy(m_AesIv, pIv, 0x10);
@@ -23,7 +24,7 @@ void AesCbcEncryptor128::Initialize(const void* pKey, size_t keySize, const void
 
 void AesCbcEncryptor128::Finalize() {
     /* Finalize ECB encrypter. */
-    m_EcbEncrypter.Finalize();
+    m_pEncryptor->Finalize();
 }
 
 crypto::AesResult AesCbcEncryptor128::EncryptData(void* pOut, size_t outSize, const void* pIn, size_t size) {
@@ -44,7 +45,7 @@ crypto::AesResult AesCbcEncryptor128::EncryptData(void* pOut, size_t outSize, co
         crypto::detail::AesXorBlock128(tmp, tmp, m_AesIv);
 
         /* Encrypt data with key */
-        m_EcbEncrypter.EncryptBlock(static_cast<uint8_t*>(pOut) + pos, tmp);
+        m_pEncryptor->EncryptBlock(static_cast<uint8_t*>(pOut) + pos, tmp);
 
         /* Copy encrypted data to iv_buf */
         std::memcpy(m_AesIv, static_cast<uint8_t*>(pOut) + pos, Aes128BlockLength);

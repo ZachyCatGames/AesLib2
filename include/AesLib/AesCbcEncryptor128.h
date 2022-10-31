@@ -1,8 +1,8 @@
 #pragma once
 #include <AesLib/AesCommon.h>
-#include <AesLib/AesEcbEncryptor128.h>
 #include <AesLib/detail/IAesEncryptor128.h>
 #include <cstdint>
+#include <memory>
 
 namespace crypto {
 
@@ -20,7 +20,7 @@ public:
     crypto::AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t size);
 
 private:
-    crypto::AesEcbEncryptor128 m_EcbEncrypter;
+    std::unique_ptr<crypto::detail::IAesEncryptor128> m_pEncryptor;
     uint8_t m_AesIv[16];
 };
 
