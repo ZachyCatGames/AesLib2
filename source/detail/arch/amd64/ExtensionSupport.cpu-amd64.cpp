@@ -1,5 +1,4 @@
-#pragma once
-#include <intrin.h>
+#include <AesLib/detail/arch/amd64/CpuId.cpu-amd64.h>
 
 namespace crypto {
 namespace detail {
@@ -7,11 +6,12 @@ namespace arch {
 namespace amd64 {
 
 bool SupportsAesExtensions() {
-    int registers[4];
-    
-    __cpuid(registers, 1);
+    int eax, ebx, ecx, edx;
 
-    return registers[0];
+    /* Get CpuId. */
+    crypto::detail::arch::amd64::GetCpuId(1, &eax, &ebx, &ecx, &edx);
+
+    return ecx & (1 << 25);
 }
 
 } // namespace amd64

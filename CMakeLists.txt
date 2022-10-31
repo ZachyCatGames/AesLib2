@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED yes)
 # Add include dir
 include_directories(include)
 
-add_compile_options(-mcpu=cortex-a57+crypto)
+add_compile_options(-mcpu=cortex-a57+crypto -maes)
 
 # Add -maes on x86
 
@@ -30,7 +30,8 @@ add_library(AesLib STATIC
     "include/AesLib/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.h" "source/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.cpp"
     "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/amd64/AesImplBuilder.cpu-amd64.cpp"
     "include/AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.cpp"
-    "include/AesLib/detail/AesXorBlock128.h" "source/detail/arch/amd64/AesXorBlock128.cpu-amd64.cpp"
+#    "include/AesLib/detail/AesXorBlock128.h" "source/detail/arch/amd64/AesXorBlock128.cpu-amd64.cpp"
+    "include/AesLib/detail/arch/amd64/CpuId.cpu-amd64.h" "source/detail/arch/amd64/CpuId.cpu-amd64.cpp"
     "include/AesLib/detail/arch/amd64/ExtensionSupport.cpu-amd64.h" "source/detail/arch/amd64/ExtensionSupport.cpu-amd64.cpp"
 
     "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
