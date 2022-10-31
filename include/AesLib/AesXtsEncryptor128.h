@@ -2,6 +2,7 @@
 #include <AesLib/detail/AesEncryptImpl128.h>
 #include <AesLib/detail/AesXtsTweakHandler.h>
 #include <cstdint>
+#include <cstddef>
 
 namespace crypto {
 

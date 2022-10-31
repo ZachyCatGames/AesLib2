@@ -34,3 +34,6 @@
 # Compiled shared lib
 *.lib
 *.a
+
+[Bb]uild
+[Bb]uild-lnx

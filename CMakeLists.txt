@@ -4,6 +4,8 @@
 cmake_minimum_required (VERSION 3.8)
 project(AesLib)
 
+enable_language(CXX ASM)
+
 # Set standard.
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED yes)
@@ -11,21 +13,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED yes)
 # Add include dir
 include_directories(include)
 
-add_compile_options(-mtune=native -march=native)
+add_compile_options(-mcpu=cortex-a57+crypto)
 
 # Add source files to lib.
 add_library(AesLib STATIC
     "include/AesLib/detail/AesByteSwap.h"
+    "include/AesLib/detail/AesDecryptImpl128.cpu-aarch64.h" "source/detail/AesDecryptImpl128.cpu-aarch64.cpp" "source/detail/AesDecryptImpl128.cpu-aarch64.S"
 #    "include/AesLib/detail/AesDecryptImpl128.cpu-amd64.h" "source/detail/AesDecryptImpl128.cpu-amd64.cpp"
-    "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
+#    "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesDecryptImpl128.h"
+    "include/AesLib/detail/AesEncryptImpl128.cpu-aarch64.h" "source/detail/AesEncryptImpl128.cpu-aarch64.cpp" "source/detail/AesEncryptImpl128.cpu-aarch64.S"
 #    "include/AesLib/detail/AesEncryptImpl128.cpu-amd64.h" "source/detail/AesEncryptImpl128.cpu-amd64.cpp"
-    "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
+#    "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesEncryptImpl128.h"
+    "include/AesLib/detail/AesExpandKeyImpl128.h" "source/detail/AesExpandKeyImpl128.cpp"
     "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"
 #    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-amd64.cpp"
     "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
-    "include/AesLib/detail/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/AesSimdKeyExpansion.cpu-amd64.cpp"
+#    "include/AesLib/detail/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/AesSimdKeyExpansion.cpu-amd64.cpp"
     "include/AesLib/detail/AesXtsTweakHandler.h" "source/detail/AesXtsTweakHandler.cpp"
 
     "include/AesLib/Aes128.h"

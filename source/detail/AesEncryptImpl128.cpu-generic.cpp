@@ -1,4 +1,5 @@
 #include <AesLib/detail/AesEncryptImpl128.cpu-generic.h>
+#include <AesLib/detail/AesExpandKeyImpl128.h>
 #include <AesLib/AesLookupTables.h>
 #include <AesLib/detail/AesByteSwap.h>
 
@@ -8,44 +9,19 @@ namespace detail {
 AesEncryptImpl128::AesEncryptImpl128() = default;
 
 AesEncryptImpl128::AesEncryptImpl128(const void* pKey, size_t keySize) {
-    this->Initialize(pKey, keySize);
+    std::memcpy(m_RoundKeys[0], pKey, 0x10);
+    crypto::detail::AesExpandKeyImpl128(m_RoundKeys[0]);
 }
 
 AesEncryptImpl128::~AesEncryptImpl128() = default;
 
 void AesEncryptImpl128::Initialize(const void* pKey, size_t keySize) {
     std::memcpy(m_RoundKeys[0], pKey, 0x10);
-    this->ExpandKeyImpl();
+    crypto::detail::AesExpandKeyImpl128(m_RoundKeys[0]);
 }
 
 void AesEncryptImpl128::Finalize() {
     /* ... */
-}
-
-void AesEncryptImpl128::ExpandKeyImpl() {
-    for(uint8_t round = 1; round < 11; round++) {
-        uint32_t* curKey = m_RoundKeys[round];
-        uint32_t* preKey = m_RoundKeys[round - 1];
-        uint32_t tmp = m_RoundKeys[round - 1][3];
-
-        /* Subsitute bytes */
-        tmp = (sbox[(tmp >> 0x00) & 0xFF] << 0x00) |
-              (sbox[(tmp >> 0x08) & 0xFF] << 0x08) |
-              (sbox[(tmp >> 0x10) & 0xFF] << 0x10) |
-              (sbox[(tmp >> 0x18) & 0xFF] << 0x18);
-
-
-        /* Rotate bytes. */
-        tmp = (tmp >> 0x8) | ((tmp & 0xFF) << 0x18);
-
-        /* Handle first word. */
-        curKey[0] = preKey[0] ^ tmp ^ rcon[round];
-
-        /* XOR each word with the previous word from the previous key. */
-        curKey[1] = curKey[0] ^ preKey[1];
-        curKey[2] = curKey[1] ^ preKey[2];
-        curKey[3] = curKey[2] ^ preKey[3];
-    }
 }
 
 void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {

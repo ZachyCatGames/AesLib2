@@ -6,5 +6,5 @@ int main(int argc, char** argv) {
     crypto::test::TestAesEcbMode();
 
     /* Test CBC mode. */
-    //crypto::test::TestAesCbcMode();
+    crypto::test::TestAesCbcMode();
 }

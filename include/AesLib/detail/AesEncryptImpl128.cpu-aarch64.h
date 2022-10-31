@@ -17,7 +17,7 @@ public:
     void EncryptBlock(void* pOut, const void* pIn);
 
 private:
-    uint32_t m_RoundKeys[11][4];
+    uint32_t m_RoundKeys[11 * 4];
 };
 
 } // namespace detail

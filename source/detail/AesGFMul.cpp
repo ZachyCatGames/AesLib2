@@ -15,7 +15,7 @@ void GFMul(void* pOut, const void* pIn) {
 
     //The multiplication of a polynomial by x in GF(2^128) corresponds to a
     //shift of indices
-    for(size_t i = 15; i > 0; i--)
+    for(int i = 15; i > 0; i--)
     {
         out_ptr[i] = (in_ptr[i] << 1) | (in_ptr[i - 1] >> 7);
     }
