@@ -8,21 +8,29 @@
 namespace crypto {
 namespace detail {
 
-std::unique_ptr<crypto::detail::IAesDecryptor128> BuildDecryptorImpl(const void* pKey, size_t keySize) {
+template<typename... Args>
+std::unique_ptr<crypto::detail::IAesDecryptor128> BuildDecryptor(Args... args) {
     /* Check for AES extension support. */
     if(crypto::detail::arch::amd64::SupportsAesExtensions())
-        return std::make_unique<crypto::detail::arch::amd64::AesDecryptImpl128>(pKey, keySize);
+        return std::make_unique<crypto::detail::arch::amd64::AesDecryptImpl128>(args...);
 
-    return std::make_unique<crypto::detail::AesDecryptImpl128>(pKey, keySize);
+    return std::make_unique<crypto::detail::AesDecryptImpl128>(args...);
 }
 
-std::unique_ptr<crypto::detail::IAesEncryptor128> BuildEncryptorImpl(const void* pKey, size_t keySize) {
+template<typename... Args>
+std::unique_ptr<crypto::detail::IAesEncryptor128> BuildEncryptor(Args... args) {
     /* Check for AES extension support. */
     if(crypto::detail::arch::amd64::SupportsAesExtensions())
-        return std::make_unique<crypto::detail::arch::amd64::AesEncryptImpl128>(pKey, keySize);
+        return std::make_unique<crypto::detail::arch::amd64::AesEncryptImpl128>(args...);
 
-    return std::make_unique<crypto::detail::AesEncryptImpl128>(pKey, keySize);
+    return std::make_unique<crypto::detail::AesEncryptImpl128>(args...);
 }
+
+template std::unique_ptr<crypto::detail::IAesDecryptor128> BuildDecryptor(void);
+template std::unique_ptr<crypto::detail::IAesDecryptor128> BuildDecryptor(const void*, size_t);
+
+template std::unique_ptr<crypto::detail::IAesEncryptor128> BuildEncryptor(void);
+template std::unique_ptr<crypto::detail::IAesEncryptor128> BuildEncryptor(const void*, size_t);
 
 } // namespace detail
 } // namespace crypto

@@ -9,7 +9,7 @@ namespace detail {
 AesXtsTweakHandler::AesXtsTweakHandler() = default;
 
 AesXtsTweakHandler::AesXtsTweakHandler(const void* pKey, size_t keySize) :
-    m_pEncryptor(crypto::detail::BuildEncryptorImpl(pKey, keySize))
+    m_pEncryptor(crypto::detail::BuildEncryptor(pKey, keySize))
 {
     /* ... */
 }
@@ -17,7 +17,7 @@ AesXtsTweakHandler::AesXtsTweakHandler(const void* pKey, size_t keySize) :
 AesXtsTweakHandler::~AesXtsTweakHandler() = default;
 
 void AesXtsTweakHandler::Initialize(const void* pKey, size_t keySize) {
-    m_pEncryptor = crypto::detail::BuildEncryptorImpl(pKey, keySize);
+    m_pEncryptor = crypto::detail::BuildEncryptor(pKey, keySize);
 }
 
 void AesXtsTweakHandler::SetupTweak(void* pOut, size_t curSector, size_t sectAddr) {

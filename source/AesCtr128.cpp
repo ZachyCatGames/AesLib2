@@ -4,15 +4,29 @@
 
 namespace crypto {
 
-AesCtr128::AesCtr128() = default;
+AesCtr128::AesCtr128() :
+    m_pEncryptor(crypto::detail::BuildEncryptor())
+{
+    /* ... */
+}
 
 AesCtr128::AesCtr128(const void* pKey, size_t keySize, const void* pCtr, size_t ctrSize) :
-    m_pEncryptor(crypto::detail::BuildEncryptorImpl(pKey, keySize))
+    m_pEncryptor(crypto::detail::BuildEncryptor(pKey, keySize))
 {
     std::memcpy(m_AesCounter, pCtr, 0x10);
 }
 
 AesCtr128::~AesCtr128() = default;
+
+void AesCtr128::Initialize(const void* pKey, size_t keySize, const void* pCtr, size_t ctrSize) {
+    m_pEncryptor->Initialize(pKey, keySize);
+
+    std::memcpy(m_AesCounter, pCtr, 0x10);
+}
+
+void AesCtr128::Finalize() {
+    m_pEncryptor->Finalize();
+}
 
 void AesCtr128::SetCounter(const void* pCtr, size_t ctrSize) {
     std::memcpy(m_AesCounter, pCtr, 0x10);

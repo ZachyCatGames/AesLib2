@@ -4,10 +4,14 @@
 
 namespace crypto {
 
-AesEcbEncryptor128::AesEcbEncryptor128() = default;
+AesEcbEncryptor128::AesEcbEncryptor128() :
+    m_pImpl(crypto::detail::BuildEncryptor())
+{
+    /* ... */
+}
 
 AesEcbEncryptor128::AesEcbEncryptor128(const void* pKey, size_t keySize) :
-    m_pImpl(crypto::detail::BuildEncryptorImpl(pKey, keySize))
+    m_pImpl(crypto::detail::BuildEncryptor(pKey, keySize))
 {
     /* ... */
 }
@@ -15,7 +19,7 @@ AesEcbEncryptor128::AesEcbEncryptor128(const void* pKey, size_t keySize) :
 AesEcbEncryptor128::~AesEcbEncryptor128() = default;
 
 void AesEcbEncryptor128::Initialize(const void* pKey, size_t keySize) {
-    m_pImpl = crypto::detail::BuildEncryptorImpl(pKey, keySize);
+    m_pImpl->Initialize(pKey, keySize);
 }
 
 void AesEcbEncryptor128::Finalize() {

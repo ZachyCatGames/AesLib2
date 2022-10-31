@@ -4,10 +4,14 @@
 
 namespace crypto {
 
-AesCbcDecryptor128::AesCbcDecryptor128() = default;
+AesCbcDecryptor128::AesCbcDecryptor128() :
+    m_pDecryptor(crypto::detail::BuildDecryptor())
+{
+    /* ... */
+}
 
 AesCbcDecryptor128::AesCbcDecryptor128(const void* pKey, size_t keySize, const void* pIv, size_t ivSize) :
-    m_pDecryptor(crypto::detail::BuildDecryptorImpl(pKey, keySize))
+    m_pDecryptor(crypto::detail::BuildDecryptor(pKey, keySize))
 {
     std::memcpy(m_AesIv, pIv, 0x10);
 }
@@ -16,7 +20,7 @@ AesCbcDecryptor128::~AesCbcDecryptor128() = default;
 
 void AesCbcDecryptor128::Initialize(const void* pKey, size_t keySize, const void* pIv, size_t ivSize) {
     /* Initialize ECB encrypter. */
-    m_pDecryptor = crypto::detail::BuildDecryptorImpl(pKey, keySize);
+    m_pDecryptor->Initialize(pKey, keySize);
 
     /* Copy iv. */
     std::memcpy(m_AesIv, pIv, 0x10);

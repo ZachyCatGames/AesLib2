@@ -6,9 +6,11 @@
 namespace crypto {
 namespace detail {
 
-std::unique_ptr<crypto::detail::IAesDecryptor128> BuildDecryptorImpl(const void* pKey, size_t keySize);
+template<typename... Args>
+std::unique_ptr<crypto::detail::IAesDecryptor128> BuildDecryptor(Args... args);
 
-std::unique_ptr<crypto::detail::IAesEncryptor128> BuildEncryptorImpl(const void* pKey, size_t keySize);
+template<typename... Args>
+std::unique_ptr<crypto::detail::IAesEncryptor128> BuildEncryptor(Args... args);
 
 } // namespace detail
 } // namespace crypto

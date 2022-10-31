@@ -5,10 +5,14 @@
 
 namespace crypto {
 
-AesXtsEncryptor128::AesXtsEncryptor128() = default;
+AesXtsEncryptor128::AesXtsEncryptor128() :
+    m_pEncryptor(crypto::detail::BuildEncryptor())
+{
+    /* ... */
+}
 
 AesXtsEncryptor128::AesXtsEncryptor128(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) :
-    m_pEncryptor(crypto::detail::BuildEncryptorImpl(pKey1, key1Size)),
+    m_pEncryptor(crypto::detail::BuildEncryptor(pKey1, key1Size)),
     m_TweakHandler(pKey2, key2Size),
     m_SectorSize(sectSize)
 {
@@ -18,7 +22,7 @@ AesXtsEncryptor128::AesXtsEncryptor128(const void* pKey1, size_t key1Size, const
 AesXtsEncryptor128::~AesXtsEncryptor128() = default;
 
 void AesXtsEncryptor128::Initialize(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) {
-    m_pEncryptor = crypto::detail::BuildEncryptorImpl(pKey1, key1Size);
+    m_pEncryptor->Initialize(pKey1, key1Size);
     m_TweakHandler.Initialize(pKey2, key2Size);
     m_SectorSize = sectSize;
 }
