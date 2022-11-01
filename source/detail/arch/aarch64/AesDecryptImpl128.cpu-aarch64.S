@@ -10,13 +10,13 @@
 // X1[in] const void* pKey
 // X2[in] size_t keySize
 _ZN6crypto6detail4arch7aarch6417AesDecryptImpl12810InitializeEPKvm:
-    stp     fp, lr, [sp, #-0x10]!                                   // Save fp/lr context.
+    stp     fp, lr, [sp, #-0x20]!                                   // Save fp/lr context.
     mov     fp, sp
-    str     X0, [sp, #-0x10]!
+    str     X0, [sp, #0x10]
     ld1     {v0.16B}, [X1]                                          // Copy provided key to our structure.
     st1     {v0.16B}, [X0]
     bl      _ZN6crypto6detail19AesExpandKeyImpl128EPv               // Expand key.
-    ldr     X0, [sp], #0x10                                         // Reload this.
+    ldr     X0, [sp, #0x10]                                         // Reload this.
     add     X0, X0, #0x10
     ld1     {v0.16B}, [X0]                                          // Inverse mix columns on all keys.
     aesimc  v0.16B, v0.16B
