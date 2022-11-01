@@ -42,8 +42,8 @@ _ZN6crypto6detail4arch7aarch6417AesDecryptImpl12810InitializeEPKvm:
 // X2[in] const void* pIn
 // Note: m_RoundKeys is at offset 0x0 in crypto::detail::AesDecryptImpl128
 _ZN6crypto6detail4arch7aarch6417AesDecryptImpl12812DecryptBlockEPvPKv:
-    ldr     Q0, [X2]                                                // Load input.
     add     X0, X0, #0x10                                           // Increment this to the offset of the keys.
+    ld1     {v0.16B}, [X2]
     ld1     {v1.16B, v2.16B, v3.16B, v4.16B}, [X0], #0x40           // Load keys 0,1,2,3
     aesd    v0.16B, v1.16B                                          // Perform first round.
     aesimc  v0.16B, v0.16B
