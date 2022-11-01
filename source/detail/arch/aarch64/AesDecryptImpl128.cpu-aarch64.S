@@ -45,7 +45,7 @@ _ZN6crypto6detail4arch7aarch6417AesDecryptImpl12810InitializeEPKvm:
     ld1     {v0.16B}, [X0]
     aesimc  v0.16B, v0.16B
     st1     {v0.16B}, [X0], #0x10
-    stp     fp, lr, [sp], #0x10                                     // Load previous fp/lr context.
+    stp     fp, lr, [sp], #0x20                                     // Load previous fp/lr context.
     ret
 
 // void crypto::detail::arch::aarch64::AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn);
