@@ -24,38 +24,38 @@ _ZN6crypto6detail4arch7aarch6417AesEncryptImpl12810InitializeEPKvm:
 // X2[in] const void* pIn
 // Note: m_RoundKeys is at offset 0x0 in crypto::detail::AesEncryptImpl128
 _ZN6crypto6detail4arch7aarch6417AesEncryptImpl12812EncryptBlockEPvPKv:
-    add     X0, X0, #0x10                   // Increment this to key offset.
-    ld1     {v0.16B}, [X2]                  // Load input.
-    ld1     {v1.16B}, [X0], #0x10           // Load first key.
-    aese    v0.16B, v1.16B                  // Perform first round
+    add     X0, X0, #0x10                                           // Increment this to key offset.
+    ld1     {v0.16B}, [X2]                                          // Load input.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load first key.
+    aese    v0.16B, v1.16B                                          // Perform first round
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load second key.
-    aese    v0.16B, v1.16B                  // Perform second round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load second key.
+    aese    v0.16B, v1.16B                                          // Perform second round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load third key.
-    aese    v0.16B, v1.16B                  // Perform third round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load third key.
+    aese    v0.16B, v1.16B                                          // Perform third round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load fourth key.
-    aese    v0.16B, v1.16B                  // Perform fourth round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load fourth key.
+    aese    v0.16B, v1.16B                                          // Perform fourth round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load fifth key.
-    aese    v0.16B, v1.16B                  // Perform fifth round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load fifth key.
+    aese    v0.16B, v1.16B                                          // Perform fifth round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load sixth key.
-    aese    v0.16B, v1.16B                  // Perform sixth round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load sixth key.
+    aese    v0.16B, v1.16B                                          // Perform sixth round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load seventh key.
-    aese    v0.16B, v1.16B                  // Perform seventh round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load seventh key.
+    aese    v0.16B, v1.16B                                          // Perform seventh round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load eighth key.
-    aese    v0.16B, v1.16B                  // Perform eighth round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load eighth key.
+    aese    v0.16B, v1.16B                                          // Perform eighth round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load ninth key.
-    aese    v0.16B, v1.16B                  // Perform ninth round.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load ninth key.
+    aese    v0.16B, v1.16B                                          // Perform ninth round.
     aesmc   v0.16B, v0.16B
-    ld1     {v1.16B}, [X0], #0x10           // Load tenth key.
-    aese    v0.16B, v1.16B                  // Perform tenth round.
-    ld1     {v1.16B}, [X0]                  // Load last key.
-    eor     v0.16B, v0.16B, v1.16B          // XOR w/ last key.
-    st1     {v0.16B}, [X1]                  // Store result.
+    ld1     {v1.16B}, [X0], #0x10                                   // Load tenth key.
+    aese    v0.16B, v1.16B                                          // Perform tenth round.
+    ld1     {v1.16B}, [X0]                                          // Load last key.
+    eor     v0.16B, v0.16B, v1.16B                                  // XOR w/ last key.
+    st1     {v0.16B}, [X1]                                          // Store result.
     ret
