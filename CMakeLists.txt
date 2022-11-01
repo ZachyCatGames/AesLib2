@@ -13,29 +13,42 @@ set(CMAKE_CXX_STANDARD_REQUIRED yes)
 # Add include dir
 include_directories(include)
 
-add_compile_options(-mcpu=cortex-a57+crypto -maes)
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
+    # Set platform sources.
+    set(PLATFORM_SPECIFIC_SRC
+        "include/AesLib/detail/arch/amd64/AesDecryptImpl128.cpu-amd64.h" "source/detail/arch/amd64/AesDecryptImpl128.cpu-amd64.cpp"
+        "include/AesLib/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.h" "source/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.cpp"
+        "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/amd64/AesImplBuilder.cpu-amd64.cpp"
+        "include/AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.cpp"
+        "include/AesLib/detail/AesXorBlock128.h" "source/detail/arch/amd64/AesXorBlock128.cpu-amd64.cpp"
+        "include/AesLib/detail/arch/amd64/CpuId.cpu-amd64.h" "source/detail/arch/amd64/CpuId.cpu-amd64.cpp"
+        "include/AesLib/detail/arch/amd64/ExtensionSupport.cpu-amd64.h" "source/detail/arch/amd64/ExtensionSupport.cpu-amd64.cpp"
+    )
 
-# Add -maes on x86
+    # Add compile flags.
+    add_compile_options(-maes)
+elseif (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "ARM64")
+    # Set platform sources.
+    set(PLATFORM_SPECIFIC_SRC
+        "include/AesLib/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.S"
+        "include/AesLib/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.S"
+        "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/aarch64/AesImplBuilder.cpu-aarch64.cpp"
+        "include/AesLib/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.h" "source/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.cpp"
+        "include/AesLib/detail/AesXorBlock128.h" "source/detail/arch/aarch64/AesXorBlock128.cpu-aarch64.S"
+    )
 
+    # Add compile flags.
+    add_compile_options(-mcpu=cortex-a57+crypto)
+else()
+    # Set platform sources.
+    set(PLATFORM_SPECIFIC_SRC
+        "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
+    )
+endif()
 # 
 
 # Add source files to lib.
 add_library(AesLib STATIC
-#    "include/AesLib/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.S"
-#    "include/AesLib/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.S"
-#    "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/aarch64/AesImplBuilder.cpu-aarch64.cpp"
-#    "include/AesLib/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.h" "source/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.cpp"
-
-    "include/AesLib/detail/arch/amd64/AesDecryptImpl128.cpu-amd64.h" "source/detail/arch/amd64/AesDecryptImpl128.cpu-amd64.cpp"
-    "include/AesLib/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.h" "source/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.cpp"
-    "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/amd64/AesImplBuilder.cpu-amd64.cpp"
-    "include/AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h" "source/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.cpp"
-#    "include/AesLib/detail/AesXorBlock128.h" "source/detail/arch/amd64/AesXorBlock128.cpu-amd64.cpp"
-    "include/AesLib/detail/arch/amd64/CpuId.cpu-amd64.h" "source/detail/arch/amd64/CpuId.cpu-amd64.cpp"
-    "include/AesLib/detail/arch/amd64/ExtensionSupport.cpu-amd64.h" "source/detail/arch/amd64/ExtensionSupport.cpu-amd64.cpp"
-
-    "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
-
     "include/AesLib/detail/AesByteSwap.h"
     "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
@@ -55,6 +68,8 @@ add_library(AesLib STATIC
     "include/AesLib/AesXtsDecryptor128.h" "source/AesXtsDecryptor128.cpp"
     "include/AesLib/AesXtsEncryptor128.h" "source/AesXtsEncryptor128.cpp"
     "include/AesLib/AesCtr128.h" "source/AesCtr128.cpp" 
+
+    ${PLATFORM_SPECIFIC_SRC}
 )
 target_include_directories(AesLib PUBLIC include)
 
