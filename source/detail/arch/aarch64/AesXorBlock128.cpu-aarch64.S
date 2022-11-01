@@ -10,6 +10,5 @@ _ZN6crypto6detail14AesXorBlock128EPvPKvS3_:
     ldr     Q0, [X1]
     ldr     Q1, [X2]
     eor     Q0, Q0, Q1
-    str     Q0, [X1]
-    str     Q1, [X2]
+    str     Q0, [X0]
     ret
