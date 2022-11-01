@@ -20,7 +20,7 @@ public:
     virtual void DecryptBlock(void* pOut, const void* pIn) override;
 
 private:
-    uint32_t m_RoundKeys[11 * 4][4];
+    uint32_t m_RoundKeys[11 * 4 + 2]; // Extra 2 for alignment.
 };
 
 } // namespace aarch64
