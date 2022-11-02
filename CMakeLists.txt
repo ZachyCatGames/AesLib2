@@ -55,6 +55,7 @@ add_library(AesLib STATIC
     "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesExpandKeyImpl128.h" "source/detail/AesExpandKeyImpl128.cpp"
+    "include/AesLib/detail/AesExpandKeyImpl256.h" "source/detail/AesExpandKeyImpl256.cpp"
     "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"
     "include/AesLib/detail/AesXtsTweakHandler.h" "source/detail/AesXtsTweakHandler.cpp"
     "include/AesLib/detail/IAesDecryptor128.h"
@@ -82,5 +83,6 @@ add_executable(AesLibTest
     "test_program/test_EcbEncData.h"
     "test_program/test_AesEcbTest.h" "test_program/test_AesEcbTest.cpp"
     "test_program/test_AesCbcTest.h" "test_program/test_AesCbcTest.cpp"
+    "test_program/test_Aes256Exp.h" "test_program/test_Aes256Exp.cpp"
 )
 target_link_libraries(AesLibTest PUBLIC AesLib)

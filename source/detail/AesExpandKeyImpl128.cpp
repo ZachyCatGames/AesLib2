@@ -6,11 +6,12 @@ namespace detail {
 
 void AesExpandKeyImpl128(void* pKeyData) {
     uint32_t* pKeys = static_cast<uint32_t*>(pKeyData);
+    uint32_t tmp;
 
     for(uint8_t round = 1; round < 11; round++) {
         uint32_t* curKey = pKeys + (round * 4);
         uint32_t* preKey = pKeys + (round - 1) * 4;
-        uint32_t tmp = preKey[3];
+        tmp = preKey[3];
 
         /* Subsitute bytes */
         tmp = (sbox[(tmp >> 0x00) & 0xFF] << 0x00) |
