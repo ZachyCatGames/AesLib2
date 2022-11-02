@@ -3,7 +3,8 @@
 namespace crypto {
 namespace detail {
 
-void AesExpandKeyImpl256(void* pKeyData);
+template<int KeyLength>
+void AesExpandKeyImpl(void* pKeyData);
 
 } // namespace detail
 } // namespace crypto

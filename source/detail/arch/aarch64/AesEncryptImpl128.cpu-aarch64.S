@@ -14,7 +14,7 @@ _ZN6crypto6detail4arch7aarch6417AesEncryptImpl12810InitializeEPKvm:
     add     X0, X0, #0x10
     ld1     {v0.16B}, [X1]                                          // Save provided key.
     st1     {v0.16B}, [X0]
-    bl      _ZN6crypto6detail19AesExpandKeyImpl128EPv
+    bl      _ZN6crypto6detail16AesExpandKeyImplILi128EEEvPv
     ldp     fp, lr, [sp], #0x10
     ret
 

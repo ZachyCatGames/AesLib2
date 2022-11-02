@@ -1,5 +1,5 @@
 #include <AesLib/detail/AesEncryptImpl128.cpu-generic.h>
-#include <AesLib/detail/AesExpandKeyImpl128.h>
+#include <AesLib/detail/AesExpandKeyImpl.h>
 #include <AesLib/detail/AesLookupTables128.h>
 #include <AesLib/detail/AesByteSwap.h>
 
@@ -10,14 +10,14 @@ AesEncryptImpl128::AesEncryptImpl128() = default;
 
 AesEncryptImpl128::AesEncryptImpl128(const void* pKey, size_t keySize) {
     std::memcpy(m_RoundKeys[0], pKey, 0x10);
-    crypto::detail::AesExpandKeyImpl128(m_RoundKeys[0]);
+    crypto::detail::AesExpandKeyImpl<128>(m_RoundKeys[0]);
 }
 
 AesEncryptImpl128::~AesEncryptImpl128() = default;
 
 void AesEncryptImpl128::Initialize(const void* pKey, size_t keySize) {
     std::memcpy(m_RoundKeys[0], pKey, 0x10);
-    crypto::detail::AesExpandKeyImpl128(m_RoundKeys[0]);
+    crypto::detail::AesExpandKeyImpl<128>(m_RoundKeys[0]);
 }
 
 void AesEncryptImpl128::Finalize() {

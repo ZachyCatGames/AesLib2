@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED yes)
 # Add include dir
 include_directories(include)
 
+set(CMAKE_SYSTEM_PROCESSOR "aarch64")
 
 if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
     # Set platform sources.
@@ -54,6 +55,7 @@ add_library(AesLib STATIC
     "include/AesLib/detail/AesByteSwap.h"
     "include/AesLib/detail/AesDecryptImpl128.cpu-generic.h" "source/detail/AesDecryptImpl128.cpu-generic.cpp"
     "include/AesLib/detail/AesEncryptImpl128.cpu-generic.h" "source/detail/AesEncryptImpl128.cpu-generic.cpp"
+    "include/AesLib/detail/AesExpandKeyImpl.h" "source/detail/AesExpandKeyImpl.cpp"
     "include/AesLib/detail/AesExpandKeyImpl128.h" "source/detail/AesExpandKeyImpl128.cpp"
     "include/AesLib/detail/AesExpandKeyImpl256.h" "source/detail/AesExpandKeyImpl256.cpp"
     "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"

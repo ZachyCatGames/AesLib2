@@ -15,7 +15,7 @@ _ZN6crypto6detail4arch7aarch6417AesDecryptImpl12810InitializeEPKvm:
     str     X0, [sp, #0x10]
     ld1     {v0.16B}, [X1]                                          // Copy provided key to our structure.
     st1     {v0.16B}, [X0]
-    bl      _ZN6crypto6detail19AesExpandKeyImpl128EPv               // Expand key.
+    bl      _ZN6crypto6detail16AesExpandKeyImplILi128EEEvPv               // Expand key.
     ldr     X0, [sp, #0x10]                                         // Reload this.
     add     X0, X0, #0x20                                           // Start at offset 0x20 (key1)
     ld1     {v0.16B, v1.16B, v2.16B, v3.16B}, [X0]                  // Inverse mix columns on keys 1,2,3,4
