@@ -1,5 +1,5 @@
 #include <AesLib/detail/AesDecryptImpl128.cpu-generic.h>
-#include <AesLib/AesLookupTables.h>
+#include <AesLib/detail/AesLookupTables128.h>
 
 namespace crypto {
 namespace detail {

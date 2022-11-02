@@ -13,7 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED yes)
 # Add include dir
 include_directories(include)
 
-set(CMAKE_SYSTEM_PROCESSOR "aarch64")
 
 if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
     # Set platform sources.
@@ -44,6 +43,7 @@ elseif (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" OR CMAKE_SYSTEM_PROCESSOR STRE
 else()
     # Set platform sources.
     set(PLATFORM_SPECIFIC_SRC
+        "include/AesLib/detail/AesImplBuilder.h" "source/detail/AesImplBuilder.cpu-generic.cpp"
         "include/AesLib/detail/AesXorBlock128.h" "source/detail/AesXorBlock128.cpu-generic.cpp"
     )
 endif()
@@ -62,7 +62,7 @@ add_library(AesLib STATIC
 
     "include/AesLib/Aes128.h"
     "include/AesLib/AesCommon.h"
-    "include/AesLib/AesLookupTables.h"
+    "include/AesLib/detail/AesLookupTables128.h"
     "include/AesLib/AesEcbDecryptor128.h" "source/AesEcbDecryptor128.cpp"
     "include/AesLib/AesEcbEncryptor128.h" "source/AesEcbEncryptor128.cpp"
     "include/AesLib/AesCbcDecryptor128.h" "source/AesCbcDecryptor128.cpp"

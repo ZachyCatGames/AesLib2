@@ -1,5 +1,4 @@
 #include <AesLib/AesEcbDecryptor128.h>
-#include <AesLib/AesLookupTables.h>
 #include <AesLib/detail/AesImplBuilder.h>
 
 namespace crypto {

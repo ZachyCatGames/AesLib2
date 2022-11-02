@@ -1,4 +1,7 @@
-#include <inttypes.h>
+#include <cstdint>
+
+namespace crypto {
+namespace detail {
 
 /* S-Box */
 constexpr const static uint8_t sbox[0x100] = {
@@ -493,3 +496,5 @@ static constexpr uint32_t T_TableInv3[] = {
     0x397101a8, 0x08deb30c, 0xd89ce4b4, 0x6490c156, 0x7b6184cb, 0xd570b632, 0x48745c6c, 0xd04257b8,
 };
 
+} // namespace detail 
+} // namespace crypto

@@ -1,6 +1,5 @@
-#pragma once
 #include <cstdint>
-#include <AesLib/AesLookupTables.h>
+#include <AesLib/detail/AesLookupTables128.h>
 
 namespace crypto {
 namespace detail {

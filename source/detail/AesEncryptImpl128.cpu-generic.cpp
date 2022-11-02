@@ -1,6 +1,6 @@
 #include <AesLib/detail/AesEncryptImpl128.cpu-generic.h>
 #include <AesLib/detail/AesExpandKeyImpl128.h>
-#include <AesLib/AesLookupTables.h>
+#include <AesLib/detail/AesLookupTables128.h>
 #include <AesLib/detail/AesByteSwap.h>
 
 namespace crypto {
