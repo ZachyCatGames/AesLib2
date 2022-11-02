@@ -1,4 +1,4 @@
-#include <AesLib/detail/arch/amd64/AesEncryptImpl128.cpu-amd64.h>
+#include <AesLib/detail/arch/amd64/AesEncryptImpl.cpu-amd64.h>
 #include <AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h>
 
 namespace crypto {
@@ -6,23 +6,29 @@ namespace detail {
 namespace arch {
 namespace amd64 {
 
-AesEncryptImpl128::AesEncryptImpl128() = default;
+template<int KeyLength>
+AesEncryptImpl<KeyLength>::AesEncryptImpl() = default;
 
-AesEncryptImpl128::AesEncryptImpl128(const void* pKey, size_t keySize) {
+template<int KeyLength>
+AesEncryptImpl<KeyLength>::AesEncryptImpl(const void* pKey, size_t keySize) {
     this->Initialize(pKey, keySize);
 }
 
-AesEncryptImpl128::~AesEncryptImpl128() = default;
+template<int KeyLength>
+AesEncryptImpl<KeyLength>::~AesEncryptImpl() = default;
 
-void AesEncryptImpl128::Initialize(const void* pKey, size_t keySize) {
+template<int KeyLength>
+void AesEncryptImpl<KeyLength>::Initialize(const void* pKey, size_t keySize) {
     this->ExpandKeyImpl(pKey);
 }
 
-void AesEncryptImpl128::Finalize() {
+template<int KeyLength>
+void AesEncryptImpl<KeyLength>::Finalize() {
     /* ... */
 }
 
-void AesEncryptImpl128::ExpandKeyImpl(const void* pKey) { 
+template<int KeyLength>
+void AesEncryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) { 
     ALIGN(16) __m128i roundKey;
 
     /* Generate keys. */
@@ -50,7 +56,8 @@ void AesEncryptImpl128::ExpandKeyImpl(const void* pKey) {
     _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[10]), roundKey);
 }
 
-void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
+template<int KeyLength>
+void AesEncryptImpl<KeyLength>::EncryptBlock(void* pOut, const void* pIn) {
     constexpr uint8_t roundCount = 9;
     ALIGN(16) __m128i roundKey;
     ALIGN(16) __m128i block;
@@ -75,6 +82,10 @@ void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
     /* Save encrypted data. */
     _mm_storeu_si128(static_cast<__m128i*>(pOut), block);
 }
+
+template class AesEncryptImpl<128>;
+template class AesEncryptImpl<192>;
+template class AesEncryptImpl<256>;
 
 } // namespace amd64
 } // namespace arch

@@ -1,31 +1,36 @@
-#include <AesLib/detail/AesEncryptImpl128.cpu-generic.h>
+#include <AesLib/detail/AesEncryptImpl.cpu-generic.h>
 #include <AesLib/detail/AesExpandKeyImpl.h>
-#include <AesLib/detail/AesLookupTables128.h>
+#include <AesLib/detail/AesLookupTables.h>
 #include <AesLib/detail/AesByteSwap.h>
 
 namespace crypto {
 namespace detail {
 
-AesEncryptImpl128::AesEncryptImpl128() = default;
+template<int KeyLength>
+AesEncryptImpl<KeyLength>::AesEncryptImpl() = default;
 
-AesEncryptImpl128::AesEncryptImpl128(const void* pKey, size_t keySize) {
-    std::memcpy(m_RoundKeys[0], pKey, 0x10);
-    crypto::detail::AesExpandKeyImpl<128>(m_RoundKeys[0]);
+template<int KeyLength>
+AesEncryptImpl<KeyLength>::AesEncryptImpl(const void* pKey, size_t keySize) {
+    std::memcpy(m_RoundKeys[0], pKey, KeySize);
+    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys[0]);
 }
 
-AesEncryptImpl128::~AesEncryptImpl128() = default;
+template<int KeyLength>
+AesEncryptImpl<KeyLength>::~AesEncryptImpl() = default;
 
-void AesEncryptImpl128::Initialize(const void* pKey, size_t keySize) {
-    std::memcpy(m_RoundKeys[0], pKey, 0x10);
-    crypto::detail::AesExpandKeyImpl<128>(m_RoundKeys[0]);
+template<int KeyLength>
+void AesEncryptImpl<KeyLength>::Initialize(const void* pKey, size_t keySize) {
+    std::memcpy(m_RoundKeys[0], pKey, KeySize);
+    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys[0]);
 }
 
-void AesEncryptImpl128::Finalize() {
+template<int KeyLength>
+void AesEncryptImpl<KeyLength>::Finalize() {
     /* ... */
 }
 
-void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
-    constexpr const uint8_t roundCount = 9;
+template<int KeyLength>
+void AesEncryptImpl<KeyLength>::EncryptBlock(void* pOut, const void* pIn) {
     const uint32_t* pIn32 = static_cast<const uint32_t*>(pIn);
     uint32_t* pOut32 = static_cast<uint32_t*>(pOut);
     uint32_t tmp[4];
@@ -36,7 +41,8 @@ void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
     }
 
     /* Shift Rows Right, Mix Columns, and Subsitute. */
-    for(uint8_t round = 1; round <= roundCount; round++) {
+    for(uint8_t round = 1; round <= m_Rounds - 2; round++) {
+
         tmp[0] = T_Table0[pOut32[0] & 0xFF] ^ T_Table1[pOut32[1] >> 8 & 0xFF] ^ T_Table2[pOut32[2] >> 16 & 0xFF] ^ T_Table3[pOut32[3] >> 24];
         tmp[1] = T_Table0[pOut32[1] & 0xFF] ^ T_Table1[pOut32[2] >> 8 & 0xFF] ^ T_Table2[pOut32[3] >> 16 & 0xFF] ^ T_Table3[pOut32[0] >> 24];
         tmp[2] = T_Table0[pOut32[2] & 0xFF] ^ T_Table1[pOut32[3] >> 8 & 0xFF] ^ T_Table2[pOut32[0] >> 16 & 0xFF] ^ T_Table3[pOut32[1] >> 24];
@@ -45,7 +51,6 @@ void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
         for(int i = 0; i < 4; ++i) {
             pOut32[i] = tmp[i] ^ m_RoundKeys[round][i];
         }
-
     }
 
     /* Shift Rows Right and Subsitute */
@@ -68,9 +73,13 @@ void AesEncryptImpl128::EncryptBlock(void* pOut, const void* pIn) {
 
     /* Add roundkey */
     for(uint8_t i = 0; i < 4; i++) {
-        pOut32[i] = tmp[i] ^ m_RoundKeys[10][i];
+        pOut32[i] = tmp[i] ^ m_RoundKeys[m_Rounds - 1][i];
     }
 }
+
+template class AesEncryptImpl<128>;
+template class AesEncryptImpl<192>;
+template class AesEncryptImpl<256>;
 
 } // namespace detail
 } // namespace crypto

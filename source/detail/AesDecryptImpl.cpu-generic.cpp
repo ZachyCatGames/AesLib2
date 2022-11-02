@@ -1,76 +1,34 @@
-#include <AesLib/detail/AesDecryptImpl128.cpu-generic.h>
-#include <AesLib/detail/AesLookupTables128.h>
+#include <AesLib/detail/AesDecryptImpl.cpu-generic.h>
+#include <AesLib/detail/AesExpandKeyImpl.h>
+#include <AesLib/detail/AesLookupTables.h>
 
 namespace crypto {
 namespace detail {
 
-AesDecryptImpl128::AesDecryptImpl128() = default;
+template<int KeyLength>
+AesDecryptImpl<KeyLength>::AesDecryptImpl() = default;
 
-AesDecryptImpl128::AesDecryptImpl128(const void* pKey, size_t keySize) {
+template<int KeyLength>
+AesDecryptImpl<KeyLength>::AesDecryptImpl(const void* pKey, size_t keySize) {
     this->Initialize(pKey, keySize);
 }
 
-AesDecryptImpl128::~AesDecryptImpl128() = default;
+template<int KeyLength>
+AesDecryptImpl<KeyLength>::~AesDecryptImpl() = default;
 
-void AesDecryptImpl128::Initialize(const void* pKey, size_t keySize) {
-    std::memcpy(m_RoundKeys[0], pKey, 0x10);
-    this->ExpandKeyImpl();
+template<int KeyLength>
+void AesDecryptImpl<KeyLength>::Initialize(const void* pKey, size_t keySize) {
+    std::memcpy(m_RoundKeys[0], pKey, KeySize);
+    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys[0]);
 }
 
-void AesDecryptImpl128::Finalize() {
+template<int KeyLength>
+void AesDecryptImpl<KeyLength>::Finalize() {
     /* ... */
 }
 
-void AesDecryptImpl128::ExpandKeyImpl() {
-    uint32_t* m_RoundKeysX = reinterpret_cast<uint32_t*>(m_RoundKeys);
-
-    for(uint8_t round = 1; round < 11; round++) {
-        uint32_t* curKey = reinterpret_cast<uint32_t*>(m_RoundKeys[round]);
-        uint32_t* preKey = reinterpret_cast<uint32_t*>(m_RoundKeys[round - 1]);
-        uint32_t tmp = m_RoundKeysX[(round - 1) * 4 + 3];
-
-        /* Subsitute bytes */
-        tmp = (sbox[(tmp >> 0x00) & 0xFF] << 0x00) |
-              (sbox[(tmp >> 0x08) & 0xFF] << 0x08) |
-              (sbox[(tmp >> 0x10) & 0xFF] << 0x10) |
-              (sbox[(tmp >> 0x18) & 0xFF] << 0x18);
-
-
-        /* Rotate bytes. */
-        tmp = (tmp >> 0x8) | ((tmp & 0xFF) << 0x18);
-
-        /* Handle first word. */
-        curKey[0] = preKey[0] ^ tmp ^ rcon[round];
-
-        /* XOR each word with the previous word from the previous key. */
-        curKey[1] = curKey[0] ^ preKey[1];
-        curKey[2] = curKey[1] ^ preKey[2];
-        curKey[3] = curKey[2] ^ preKey[3];
-    }
-
-    for(int i = 0; i < 11; ++i) {
-        auto key = reinterpret_cast<uint32_t*>(m_RoundKeys[i]);
-    m_InvRoundKeys[i][0] = sbox[(key[0] & 0xFF)] |
-             sbox[(key[0] >> 8 & 0xFF)] << 8 |
-             sbox[(key[0] >> 16 & 0xFF)] << 16 |
-             sbox[(key[0] >> 24 & 0xFF)] << 24;
-    m_InvRoundKeys[i][1] = sbox[(key[1] & 0xFF)] |
-             sbox[(key[1] >> 8 & 0xFF)] << 8 |
-             sbox[(key[1] >> 16 & 0xFF)] << 16 |
-             sbox[(key[1] >> 24 & 0xFF)] << 24;
-    m_InvRoundKeys[i][2] = sbox[(key[2] & 0xFF)] |
-             sbox[(key[2] >> 8 & 0xFF)] << 8 |
-             sbox[(key[2] >> 16 & 0xFF)] << 16 |
-             sbox[(key[2] >> 24 & 0xFF)] << 24;
-    m_InvRoundKeys[i][3] = sbox[(key[3] & 0xFF)] |
-             sbox[(key[3] >> 8 & 0xFF)] << 8 |
-             sbox[(key[3] >> 16 & 0xFF)] << 16 |
-             sbox[(key[3] >> 24 & 0xFF)] << 24;
-    }
-
-}
-
-void AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn) {
+template<int KeyLength>
+void AesDecryptImpl<KeyLength>::DecryptBlock(void* pOut, const void* pIn) {
     constexpr const uint8_t roundCount = 9;
     uint8_t tmp[16] = {0};
     uint32_t* tmp32 = reinterpret_cast<uint32_t*>(tmp);
@@ -81,7 +39,7 @@ void AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn) {
 
     /* Subtract Last Roundkey */
     for(uint8_t i = 0; i < 4; i++) {
-        reinterpret_cast<uint32_t*>(tmp)[i] = reinterpret_cast<const uint32_t*>(input)[i] ^ reinterpret_cast<uint32_t*>(m_RoundKeys[10])[i];
+        reinterpret_cast<uint32_t*>(tmp)[i] = reinterpret_cast<const uint32_t*>(input)[i] ^ reinterpret_cast<uint32_t*>(m_RoundKeys[m_Rounds - 1])[i];
     }
 
     /* Un-shift rows and invserse subsitution. */
@@ -106,7 +64,7 @@ void AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn) {
                  (inv_s[((tmp32[0] >> 0x18) & 0xFF)] << 0x18);
 
 
-    for(uint8_t round = roundCount; round > 0; round--) {
+    for(uint8_t round = m_Rounds - 2; round > 0; round--) {
         /* Subtract Roundkey */
         for(uint8_t i = 0; i < 4; i++) {
             reinterpret_cast<uint32_t*>(tmp)[i] = reinterpret_cast<uint32_t*>(output)[i] ^ reinterpret_cast<uint32_t*>(m_RoundKeys[round])[i];
@@ -139,6 +97,10 @@ void AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn) {
         reinterpret_cast<uint32_t*>(output)[i] ^= reinterpret_cast<uint32_t*>(m_RoundKeys[0])[i];
     }
 }
+
+template class AesDecryptImpl<128>;
+template class AesDecryptImpl<192>;
+template class AesDecryptImpl<256>;
 
 } // namespace detail
 } // namespace crypto

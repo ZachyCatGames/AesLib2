@@ -1,3 +1,4 @@
+#include <AesLib/detail/arch/amd64/ExtensionSupport.cpu-amd64.h>
 #include <AesLib/detail/arch/amd64/CpuId.cpu-amd64.h>
 
 namespace crypto {
@@ -11,6 +12,7 @@ bool SupportsAesExtensions() {
     /* Get CpuId. */
     crypto::detail::arch::amd64::GetCpuId(1, &eax, &ebx, &ecx, &edx);
 
+    return false;
     return ecx & (1 << 25);
 }
 

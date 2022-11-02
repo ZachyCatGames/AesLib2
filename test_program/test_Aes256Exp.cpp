@@ -1,7 +1,5 @@
 #include "test_Aes256Exp.h"
 #include <AesLib/detail/AesExpandKeyImpl.h>
-#include <AesLib/detail/AesExpandKeyImpl256.h>
-#include <AesLib/detail/AesExpandKeyImpl128.h>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>

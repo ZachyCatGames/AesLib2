@@ -23,6 +23,8 @@ enum Aes128Result {
 
 namespace crypto {
 
+static constexpr size_t AesBlockLength = 0x10;
+
 enum class AesResult {
     Success = 0,
     NotAligned,

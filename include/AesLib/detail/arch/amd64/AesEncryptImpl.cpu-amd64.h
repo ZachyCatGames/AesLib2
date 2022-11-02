@@ -3,18 +3,19 @@
 #include <cstdint>
 #include <wmmintrin.h>
 #include <AesLib/AesCommon.h>
-#include <AesLib/detail/IAesEncryptor128.h>
+#include <AesLib/detail/IAesEncryptor.h>
 
 namespace crypto {
 namespace detail {
 namespace arch {
 namespace amd64 {
 
-class AesEncryptImpl128 : public crypto::detail::IAesEncryptor128 {
+template<int KeyLength>
+class AesEncryptImpl : public crypto::detail::IAesEncryptor<KeyLength> {
 public:
-    AesEncryptImpl128();
-    AesEncryptImpl128(const void* pKey, size_t keySize);
-    virtual ~AesEncryptImpl128();
+    AesEncryptImpl();
+    AesEncryptImpl(const void* pKey, size_t keySize);
+    virtual ~AesEncryptImpl();
 
     virtual void Initialize(const void* pKey, size_t keySize) override;
     virtual void Finalize() override;
@@ -25,6 +26,7 @@ private:
     void ExpandKeyImpl(const void* pKey);
 
 private:
+    static constexpr int m_Rounds = KeyLength == 128 ? 11 : KeyLength == 192 ? 13 : 15;
     uint8_t m_RoundKeyStorage[20][16];
 };
 

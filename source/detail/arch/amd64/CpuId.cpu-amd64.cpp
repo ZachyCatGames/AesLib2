@@ -1,3 +1,5 @@
+#include <AesLib/detail/arch/amd64/CpuId.cpu-amd64.h>
+
 namespace crypto {
 namespace detail {
 namespace arch {

@@ -1,5 +1,5 @@
 #include <AesLib/detail/AesExpandKeyImpl.h>
-#include <AesLib/detail/AesLookupTables128.h>
+#include <AesLib/detail/AesLookupTables.h>
 #include <cstdint>
 
 namespace crypto {

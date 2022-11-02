@@ -4,14 +4,15 @@
 namespace crypto {
 namespace detail {
 
-class IAesDecryptor128 {
+template<int KeyLength>
+class IAesEncryptor {
 public:
-    virtual ~IAesDecryptor128() = default;
+    virtual ~IAesEncryptor() = default;
 
     virtual void Initialize(const void* pKey, size_t keySize) = 0;
     virtual void Finalize() = 0;
 
-    virtual void DecryptBlock(void* pOut, const void* pIn) = 0;
+    virtual void EncryptBlock(void* pOut, const void* pIn) = 0;
 };
 
 } // namespace detail
