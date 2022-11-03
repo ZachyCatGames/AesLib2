@@ -1,21 +1,21 @@
 .text
 
-.global _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi128EE10InitializeEPKvm
-.global _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi128EE12DecryptBlockEPvPKv
+.global _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi256EE10InitializeEPKvm
+.global _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi256EE12DecryptBlockEPvPKv
 
 // NOTE: Keys are located at offset 0x10 due to vtable shit.
 
-// void crypto::detail::arch::aarch64::AesDecryptImpl<128>::Initialize(const void* pKey, size_t keySize);
+// void crypto::detail::arch::aarch64::AesDecryptImpl128::Initialize(const void* pKey, size_t keySize);
 // X0[in] crypto::detail::AesDecryptImpl128* this
 // X1[in] const void* pKey
 // X2[in] size_t keySize
-_ZN6crypto6detail4arch7aarch6414AesDecryptImplILi128EE10InitializeEPKvm:
+_ZN6crypto6detail4arch7aarch6414AesDecryptImplILi256EE10InitializeEPKvm:
     stp     fp, lr, [sp, #-0x20]!                                   // Save fp/lr context.
     mov     fp, sp
     str     X0, [sp, #0x10]
     ld1     {v0.16B}, [X1]                                          // Copy provided key to our structure.
     st1     {v0.16B}, [X0]
-    bl      _ZN6crypto6detail16AesExpandKeyImplILi128EEEvPv         // Expand key.
+    bl      _ZN6crypto6detail16AesExpandKeyImplILi256EEEvPv         // Expand key.
     ldr     X0, [sp, #0x10]                                         // Reload this.
     add     X0, X0, #0x20                                           // Start at offset 0x20 (key1)
     ld1     {v0.16B, v1.16B, v2.16B, v3.16B}, [X0]                  // Inverse mix columns on keys 1,2,3,4
@@ -30,7 +30,13 @@ _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi128EE10InitializeEPKvm:
     aesimc  v2.16B, v2.16B
     aesimc  v3.16B, v3.16B
     st1     {v0.16B, v1.16B, v2.16B, v3.16B}, [X0], #0x40
-    ld1     {v0.16B}, [X0]                                          // Inverse mix columns on key 9
+    ld1     {v0.16B, v1.16B, v2.16B, v3.16B}, [X0]                  // Inverse mix columns on keys 9,10,11,12
+    aesimc  v0.16B, v0.16B
+    aesimc  v1.16B, v1.16B
+    aesimc  v2.16B, v2.16B
+    aesimc  v3.16B, v3.16B
+    st1     {v0.16B, v1.16B, v2.16B, v3.16B}, [X0], #0x40
+    ld1     {v0.16B}, [X0]
     aesimc  v0.16B, v0.16B
     st1     {v0.16B}, [X0]
     stp     fp, lr, [sp], #0x20                                     // Load previous fp/lr context.
@@ -41,7 +47,7 @@ _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi128EE10InitializeEPKvm:
 // X1[in] void* pOut
 // X2[in] const void* pIn
 // Note: m_RoundKeys is at offset 0x0 in crypto::detail::AesDecryptImpl128
-_ZN6crypto6detail4arch7aarch6414AesDecryptImplILi128EE12DecryptBlockEPvPKv:
+_ZN6crypto6detail4arch7aarch6414AesDecryptImplILi256EE12DecryptBlockEPvPKv:
     add     X0, X0, #0x10                                           // Increment this to the offset of the keys.
     ld1     {v0.16B}, [X2]
     ld1     {v1.16B, v2.16B, v3.16B, v4.16B}, [X0], #0x40           // Load keys 0,1,2,3
@@ -54,18 +60,27 @@ _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi128EE12DecryptBlockEPvPKv:
     aesd    v0.16B, v4.16B                                          // Perform 3rd round.
     aesimc  v0.16B, v0.16B
     ld1     {v1.16B, v2.16B, v3.16B, v4.16B}, [X0], #0x40           // Load keys 4,5,6,7
-    aesd    v0.16B, v1.16B                                          // Perform 4th round.
+    aesd    v0.16B, v1.16B                                          // Perform 5th round.
     aesimc  v0.16B, v0.16B
-    aesd    v0.16B, v2.16B                                          // Perform 5th round.
+    aesd    v0.16B, v2.16B                                          // Perform 6th round.
     aesimc  v0.16B, v0.16B
-    aesd    v0.16B, v3.16B                                          // Perform 6th round.
+    aesd    v0.16B, v3.16B                                          // Perform 7th round.
     aesimc  v0.16B, v0.16B
-    aesd    v0.16B, v4.16B                                          // Perform 7th round.
+    aesd    v0.16B, v4.16B                                          // Perform 8th round.
     aesimc  v0.16B, v0.16B
-    ld1     {v1.16B, v2.16B, v3.16B}, [X0]                          // Load keys 8,9,10
-    aesd    v0.16B, v1.16B                                          // Perform 8th round.
+    ld1     {v1.16B, v2.16B, v3.16B, v4.16B}, [X0], #0x40           // Load keys 8,9,10,11
+    aesd    v0.16B, v1.16B                                          // Perform 9th round.
     aesimc  v0.16B, v0.16B
-    aesd    v0.16B, v2.16B                                          // Perform 9th round.
+    aesd    v0.16B, v2.16B                                          // Perform 10th round.
+    aesimc  v0.16B, v0.16B
+    aesd    v0.16B, v3.16B                                          // Perform 11th round.
+    aesimc  v0.16B, v0.16B
+    aesd    v0.16B, v4.16B                                          // Perform 12th round.
+    aesimc  v0.16B, v0.16B
+    ld1     {v1.16B, v2.16B, v3.16B}, [X0]                          // Load keys 12,13,14
+    aesd    v0.16B, v1.16B                                          // Perform 13th round.
+    aesimc  v0.16B, v0.16B
+    aesd    v0.16B, v2.16B                                          // Perform 14th round.
     eor     v0.16B, v0.16B, v3.16B                                  // XOR w/ last key.
     st1     {v0.16B}, [X1]                                          // Store result.
     ret

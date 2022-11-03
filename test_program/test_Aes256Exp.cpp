@@ -26,7 +26,7 @@ constexpr uint8_t g_TestKey256[] = {
 void TestExperimentalAes256() {
     uint32_t keyData[14 * 8];
 
-    std::memcpy(keyData, g_TestKey192, 32);
+    std::memcpy(keyData, g_TestKey192, 24);
     crypto::detail::AesExpandKeyImpl<128>(keyData);
     for(int i = 0; i < 15; ++i) {
         printf("%02d ", i);

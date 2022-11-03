@@ -1,21 +1,22 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
-#include <AesLib/detail/IAesDecryptor128.h>
+#include <AesLib/detail/IAesDecryptor.h>
 
 namespace crypto {
 namespace detail {
 namespace arch {
 namespace aarch64 {
 
-class AesDecryptImpl128 : public crypto::detail::IAesDecryptor128 {
+template<int KeyLength>
+class AesDecryptImpl : public crypto::detail::IAesDecryptor<KeyLength> {
 public:
-    AesDecryptImpl128();
-    AesDecryptImpl128(const void* pKey, size_t keySize);
-    virtual ~AesDecryptImpl128();
+    AesDecryptImpl() = default;
+    AesDecryptImpl(const void* pKey, size_t keySize) { this->Initialize(pKey, keySize); }
+    virtual ~AesDecryptImpl() = default;
 
     virtual void Initialize(const void* pKey, size_t keySize) override;
-    virtual void Finalize() override;
+    virtual void Finalize() override {}
 
     virtual void DecryptBlock(void* pOut, const void* pIn) override;
 

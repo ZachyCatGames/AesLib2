@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED yes)
 # Add include dir
 include_directories(include)
 
-#set(CMAKE_SYSTEM_PROCESSOR "aarch64")
+set(CMAKE_SYSTEM_PROCESSOR "aarch64")
 
 if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
     # Set platform sources.
@@ -32,8 +32,14 @@ if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL 
 elseif (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "ARM64")
     # Set platform sources.
     set(PLATFORM_SPECIFIC_SRC
-        "include/AesLib/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.S"
-        "include/AesLib/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.h" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.cpp" "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.S"
+        "include/AesLib/detail/arch/aarch64/AesDecryptImpl.cpu-aarch64.h" 
+        "source/detail/arch/aarch64/AesDecryptImpl128.cpu-aarch64.S"
+        "source/detail/arch/aarch64/AesDecryptImpl192.cpu-aarch64.S"
+        "source/detail/arch/aarch64/AesDecryptImpl256.cpu-aarch64.S"
+        "include/AesLib/detail/arch/aarch64/AesEncryptImpl.cpu-aarch64.h" 
+        "source/detail/arch/aarch64/AesEncryptImpl128.cpu-aarch64.S"
+        "source/detail/arch/aarch64/AesEncryptImpl192.cpu-aarch64.S"
+        "source/detail/arch/aarch64/AesEncryptImpl256.cpu-aarch64.S"
         "include/AesLib/detail/AesImplBuilder.h" "source/detail/arch/aarch64/AesImplBuilder.cpu-aarch64.cpp"
         "include/AesLib/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.h" "source/detail/arch/aarch64/ExtensionSupport.cpu-aarch64.cpp"
         "include/AesLib/detail/AesXorBlock128.h" "source/detail/arch/aarch64/AesXorBlock128.cpu-aarch64.S"
