@@ -13,6 +13,9 @@ namespace amd64 {
 template<int KeyLength>
 class AesEncryptImpl : public crypto::detail::IAesEncryptor<KeyLength> {
 public:
+    static constexpr int KeySize = KeyLength / 8;
+
+public:
     AesEncryptImpl();
     AesEncryptImpl(const void* pKey, size_t keySize);
     virtual ~AesEncryptImpl();
@@ -26,8 +29,9 @@ private:
     void ExpandKeyImpl(const void* pKey);
 
 private:
+    static constexpr int m_KeyWordCount = KeyLength == 128 ? 44 : KeyLength == 192 ? 52 : 60;
     static constexpr int m_Rounds = KeyLength == 128 ? 11 : KeyLength == 192 ? 13 : 15;
-    uint8_t m_RoundKeyStorage[20][16];
+    uint32_t m_RoundKeyStorage[m_Rounds][4];
 };
 
 } // namespace amd64

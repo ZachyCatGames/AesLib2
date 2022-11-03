@@ -1,5 +1,6 @@
 #include <AesLib/detail/arch/amd64/AesEncryptImpl.cpu-amd64.h>
 #include <AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h>
+#include <AesLib/detail/AesExpandKeyImpl.h>
 
 namespace crypto {
 namespace detail {
@@ -30,6 +31,13 @@ void AesEncryptImpl<KeyLength>::Finalize() {
 template<int KeyLength>
 void AesEncryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) { 
     ALIGN(16) __m128i roundKey;
+
+    // TODO: Properly deal with AES192/AES256 keygen.
+    if constexpr(KeyLength >= 192) {
+        std::memcpy(m_RoundKeyStorage, pKey, KeySize);
+        crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
+        return;
+    }
 
     /* Generate keys. */
     roundKey  = _mm_loadu_si128(static_cast<const __m128i*>(pKey));
@@ -70,13 +78,13 @@ void AesEncryptImpl<KeyLength>::EncryptBlock(void* pOut, const void* pIn) {
     block = _mm_xor_si128(block, roundKey);
 
     /* Add roundkeys */
-    for(uint8_t round = 1; round <= roundCount; round++) {
+    for(uint8_t round = 1; round <= m_Rounds - 2; round++) {
         roundKey = _mm_loadu_si128(reinterpret_cast<const __m128i*>(m_RoundKeyStorage[round]));
         block = _mm_aesenc_si128(block, roundKey);
     }
 
     /* Add last roundkey */
-    roundKey = _mm_loadu_si128(reinterpret_cast<const __m128i*>(m_RoundKeyStorage[10]));
+    roundKey = _mm_loadu_si128(reinterpret_cast<const __m128i*>(m_RoundKeyStorage[m_Rounds - 1]));
     block = _mm_aesenclast_si128(block, roundKey);
 
     /* Save encrypted data. */

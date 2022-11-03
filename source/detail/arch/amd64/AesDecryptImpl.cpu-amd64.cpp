@@ -1,6 +1,7 @@
 #include <AesLib/detail/arch/amd64/AesDecryptImpl.cpu-amd64.h>
 #include <AesLib/detail/arch/amd64/AesSimdKeyExpansion.cpu-amd64.h>
 #include <AesLib/detail/AesLookupTables.h>
+#include <AesLib/detail/AesExpandKeyImpl.h>
 
 namespace crypto {
 namespace detail {
@@ -33,11 +34,22 @@ void AesDecryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) {
     ALIGN(16) __m128i roundKey;
     ALIGN(16) __m128i invKey;
 
+    // TODO: Properly deal with AES192/AES256 keygen.
+    if constexpr(KeyLength >= 192) {
+        std::memcpy(m_RoundKeyStorage, pKey, KeySize);
+        crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
+
+        for(int i = 1; i < m_Rounds - 1; ++i) {
+            invKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[i]));
+            invKey = _mm_aesimc_si128(invKey);
+            _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[i]), invKey);
+        }
+        return;
+    }
+
     /* Generate keys. */
     roundKey  = _mm_loadu_si128(static_cast<const __m128i*>(pKey));
-    invKey   = _mm_aesimc_si128(roundKey);
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[0]), invKey);
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[11]), roundKey);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[0]), roundKey);
     roundKey = AES_128_key_exp(roundKey, 0x01);
     invKey   = _mm_aesimc_si128(roundKey);
     _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[1]), invKey);
@@ -66,9 +78,8 @@ void AesDecryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) {
     invKey   = _mm_aesimc_si128(roundKey);
     _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[9]), invKey);
     roundKey = AES_128_key_exp(roundKey, 0x36);
-    invKey   = _mm_aesimc_si128(roundKey);
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[10]), invKey);
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[12]), roundKey);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[10]), roundKey);
+
 }
 
 template<int KeyLength>
@@ -80,7 +91,7 @@ void AesDecryptImpl<KeyLength>::DecryptBlock(void* pOut, const void* pIn) {
     block = _mm_loadu_si128(static_cast<const __m128i*>(pIn));
 
     /* Subtract first key. */
-    roundKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[12]));
+    roundKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[m_Rounds - 1]));
     block = _mm_xor_si128(block, roundKey);
 
     /* Subtract round keys */
@@ -90,7 +101,7 @@ void AesDecryptImpl<KeyLength>::DecryptBlock(void* pOut, const void* pIn) {
     }
 
     /* Subtract last round key */
-    roundKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[11]));
+    roundKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[0]));
     block = _mm_aesdeclast_si128(block, roundKey);
 
     /* Save decrypted data. */
