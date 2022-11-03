@@ -31,7 +31,7 @@ private:
 private:
     static constexpr int m_KeyWordCount = KeyLength == 128 ? 44 : KeyLength == 192 ? 52 : 60;
     static constexpr int m_Rounds = KeyLength == 128 ? 11 : KeyLength == 192 ? 13 : 15;
-    uint32_t m_RoundKeyStorage[m_Rounds][4];
+    uint32_t m_RoundKeyStorage[m_Rounds * 4];
 };
 
 } // namespace amd64

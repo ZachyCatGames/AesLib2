@@ -29,23 +29,10 @@ void AesDecryptImpl<KeyLength>::Finalize() {
     /* ... */
 }
 
-template<int KeyLength>
-void AesDecryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) { 
+template<>
+void AesDecryptImpl<128>::ExpandKeyImpl(const void* pKey) {
     ALIGN(16) __m128i roundKey;
     ALIGN(16) __m128i invKey;
-
-    // TODO: Properly deal with AES192/AES256 keygen.
-    if constexpr(KeyLength >= 192) {
-        std::memcpy(m_RoundKeyStorage, pKey, KeySize);
-        crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
-
-        for(int i = 1; i < m_Rounds - 1; ++i) {
-            invKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[i]));
-            invKey = _mm_aesimc_si128(invKey);
-            _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[i]), invKey);
-        }
-        return;
-    }
 
     /* Generate keys. */
     roundKey  = _mm_loadu_si128(static_cast<const __m128i*>(pKey));
@@ -79,7 +66,21 @@ void AesDecryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) {
     _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[9]), invKey);
     roundKey = AES_128_key_exp(roundKey, 0x36);
     _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[10]), roundKey);
+}
 
+template<int KeyLength>
+void AesDecryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) { 
+    ALIGN(16) __m128i invKey;
+
+    // TODO: Properly deal with AES192/AES256 keygen.
+    std::memcpy(m_RoundKeyStorage, pKey, KeySize);
+    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
+
+    for(int i = 1; i < m_Rounds - 1; ++i) {
+        invKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[i]));
+        invKey = _mm_aesimc_si128(invKey);
+        _mm_storeu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[i]), invKey);
+    }
 }
 
 template<int KeyLength>

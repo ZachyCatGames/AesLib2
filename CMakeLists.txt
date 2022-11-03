@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED yes)
 # Add include dir
 include_directories(include)
 
-set(CMAKE_SYSTEM_PROCESSOR "aarch64")
+#set(CMAKE_SYSTEM_PROCESSOR "aarch64")
 
 if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
     # Set platform sources.
