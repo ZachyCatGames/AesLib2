@@ -5,7 +5,7 @@
 
 // NOTE: Keys are located at offset 0x10 due to vtable shit.
 
-// void crypto::detail::arch::aarch64::AesDecryptImpl128::Initialize(const void* pKey, size_t keySize);
+// void crypto::detail::arch::aarch64::AesDecryptImpl<192>::Initialize(const void* pKey, size_t keySize);
 // X0[in] crypto::detail::AesDecryptImpl128* this
 // X1[in] const void* pKey
 // X2[in] size_t keySize
@@ -38,11 +38,10 @@ _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi192EE10InitializeEPKvm:
     stp     fp, lr, [sp], #0x20                                     // Load previous fp/lr context.
     ret
 
-// void crypto::detail::arch::aarch64::AesDecryptImpl128::DecryptBlock(void* pOut, const void* pIn);
-// X0[in] crypto::detail::AesDecryptImpl128* this
+// void crypto::detail::arch::aarch64::AesDecryptImpl<192>::DecryptBlock(void* pOut, const void* pIn);
+// X0[in] crypto::detail::AesDecryptImpl<192>* this
 // X1[in] void* pOut
 // X2[in] const void* pIn
-// Note: m_RoundKeys is at offset 0x0 in crypto::detail::AesDecryptImpl128
 _ZN6crypto6detail4arch7aarch6414AesDecryptImplILi192EE12DecryptBlockEPvPKv:
     add     X0, X0, #0x10                                           // Increment this to the offset of the keys.
     ld1     {v0.16B}, [X2]
