@@ -1,6 +1,7 @@
 #include <AesLib/detail/AesDecryptImpl.cpu-generic.h>
 #include <AesLib/detail/AesExpandKeyImpl.h>
 #include <AesLib/detail/AesLookupTables.h>
+#include <AesLib/detail/AesByteSwap.h>
 
 namespace crypto {
 namespace detail {
@@ -18,8 +19,16 @@ AesDecryptImpl<KeyLength>::~AesDecryptImpl() = default;
 
 template<int KeyLength>
 void AesDecryptImpl<KeyLength>::Initialize(const void* pKey, size_t keySize) {
-    std::memcpy(m_RoundKeys[0], pKey, KeySize);
-    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys[0]);
+    std::memcpy(m_RoundKeys, pKey, KeySize);
+    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys);
+
+    /* Inverse keys. */
+    for(int i = 4; i < m_KeyWordCount - 4; ++i) {
+        m_RoundKeys[i] = T_TableInv0[sbox[m_RoundKeys[i] & 0xFF]] ^
+                         T_TableInv1[sbox[m_RoundKeys[i] >> 8 & 0xFF]] ^
+                         T_TableInv2[sbox[m_RoundKeys[i] >> 16 & 0xFF]] ^
+                         T_TableInv3[sbox[m_RoundKeys[i] >> 24 & 0xFF]];
+    }
 }
 
 template<int KeyLength>
@@ -29,72 +38,43 @@ void AesDecryptImpl<KeyLength>::Finalize() {
 
 template<int KeyLength>
 void AesDecryptImpl<KeyLength>::DecryptBlock(void* pOut, const void* pIn) {
-    constexpr const uint8_t roundCount = 9;
-    uint8_t tmp[16] = {0};
-    uint32_t* tmp32 = reinterpret_cast<uint32_t*>(tmp);
-    auto output = static_cast<uint8_t*>(pOut);
-    auto input = static_cast<const uint8_t*>(pIn);
-    auto out_u32 = static_cast<uint32_t*>(pOut);
-    auto in_u32 = static_cast<const uint32_t*>(pIn);
+    const uint32_t* pIn32 = static_cast<const uint32_t*>(pIn);
+    uint32_t* pOut32 = static_cast<uint32_t*>(pOut);
+    uint32_t tmp[4];
 
     /* Subtract Last Roundkey */
     for(uint8_t i = 0; i < 4; i++) {
-        reinterpret_cast<uint32_t*>(tmp)[i] = reinterpret_cast<const uint32_t*>(input)[i] ^ reinterpret_cast<uint32_t*>(m_RoundKeys[m_Rounds - 1])[i];
+        tmp[i] = pIn32[i] ^ m_RoundKeys[(m_Rounds - 1) * 4 + i];
     }
-
-    /* Un-shift rows and invserse subsitution. */
-    out_u32[0] = (inv_s[((tmp32[0] >> 0x00) & 0xFF)] << 0x00) |
-                 (inv_s[((tmp32[3] >> 0x08) & 0xFF)] << 0x08) |
-                 (inv_s[((tmp32[2] >> 0x10) & 0xFF)] << 0x10) |
-                 (inv_s[((tmp32[1] >> 0x18) & 0xFF)] << 0x18);
-
-    out_u32[1] = (inv_s[((tmp32[1] >> 0x00) & 0xFF)] << 0x00) |
-                 (inv_s[((tmp32[0] >> 0x08) & 0xFF)] << 0x08) |
-                 (inv_s[((tmp32[3] >> 0x10) & 0xFF)] << 0x10) |
-                 (inv_s[((tmp32[2] >> 0x18) & 0xFF)] << 0x18);
-
-    out_u32[2] = (inv_s[((tmp32[2] >> 0x00) & 0xFF)] << 0x00) |
-                 (inv_s[((tmp32[1] >> 0x08) & 0xFF)] << 0x08) |
-                 (inv_s[((tmp32[0] >> 0x10) & 0xFF)] << 0x10) |
-                 (inv_s[((tmp32[3] >> 0x18) & 0xFF)] << 0x18);
-
-    out_u32[3] = (inv_s[((tmp32[3] >> 0x00) & 0xFF)] << 0x00) |
-                 (inv_s[((tmp32[2] >> 0x08) & 0xFF)] << 0x08) |
-                 (inv_s[((tmp32[1] >> 0x10) & 0xFF)] << 0x10) |
-                 (inv_s[((tmp32[0] >> 0x18) & 0xFF)] << 0x18);
-
 
     for(uint8_t round = m_Rounds - 2; round > 0; round--) {
-        /* Subtract Roundkey */
-        for(uint8_t i = 0; i < 4; i++) {
-            reinterpret_cast<uint32_t*>(tmp)[i] = reinterpret_cast<uint32_t*>(output)[i] ^ reinterpret_cast<uint32_t*>(m_RoundKeys[round])[i];
-        }
-
-        /* Unmix Columns, Shift Rows, and Inverse Subsitute Bytes */
-        output[0]  = inv_s[mul14[tmp[0]] ^ mul11[tmp[1]] ^ mul13[tmp[2]] ^ mul9[tmp[3]]];
-        output[5]  = inv_s[mul9[tmp[0]]  ^ mul14[tmp[1]] ^ mul11[tmp[2]] ^ mul13[tmp[3]]];
-        output[10] = inv_s[mul13[tmp[0]] ^ mul9[tmp[1]]  ^ mul14[tmp[2]] ^ mul11[tmp[3]]];
-        output[15] = inv_s[mul11[tmp[0]] ^ mul13[tmp[1]] ^ mul9[tmp[2]]  ^ mul14[tmp[3]]];
-
-        output[4]  = inv_s[mul14[tmp[4]] ^ mul11[tmp[5]] ^ mul13[tmp[6]] ^ mul9[tmp[7]]];
-        output[9]  = inv_s[mul9[tmp[4]]  ^ mul14[tmp[5]] ^ mul11[tmp[6]] ^ mul13[tmp[7]]];
-        output[14] = inv_s[mul13[tmp[4]] ^ mul9[tmp[5]]  ^ mul14[tmp[6]] ^ mul11[tmp[7]]];
-        output[3]  = inv_s[mul11[tmp[4]] ^ mul13[tmp[5]] ^ mul9[tmp[6]]  ^ mul14[tmp[7]]];
-
-        output[8]  = inv_s[mul14[tmp[8]]  ^ mul11[tmp[9]] ^ mul13[tmp[10]] ^ mul9[tmp[11]]];
-        output[13] = inv_s[mul9[tmp[8]]   ^ mul14[tmp[9]] ^ mul11[tmp[10]] ^ mul13[tmp[11]]];
-        output[2]  = inv_s[mul13[tmp[8]]  ^ mul9[tmp[9]]  ^ mul14[tmp[10]] ^ mul11[tmp[11]]];
-        output[7]  = inv_s[mul11[tmp[8]]  ^ mul13[tmp[9]] ^ mul9[tmp[10]]  ^ mul14[tmp[11]]]; 
-
-        output[12] = inv_s[mul14[tmp[12]] ^ mul11[tmp[13]] ^ mul13[tmp[14]] ^ mul9[tmp[15]]];
-        output[1]  = inv_s[mul9[tmp[12]]  ^ mul14[tmp[13]] ^ mul11[tmp[14]] ^ mul13[tmp[15]]];
-        output[6]  = inv_s[mul13[tmp[12]] ^ mul9[tmp[13]]  ^ mul14[tmp[14]] ^ mul11[tmp[15]]];
-        output[11] = inv_s[mul11[tmp[12]] ^ mul13[tmp[13]] ^ mul9[tmp[14]]  ^ mul14[tmp[15]]]; 
+        pOut32[0] = T_TableInv0[tmp[0] & 0xFF] ^ T_TableInv1[tmp[3] >> 8 & 0xFF] ^ T_TableInv2[tmp[2] >> 16 & 0xFF] ^ T_TableInv3[tmp[1] >> 24] ^ m_RoundKeys[round * 4 + 0];
+        pOut32[1] = T_TableInv0[tmp[1] & 0xFF] ^ T_TableInv1[tmp[0] >> 8 & 0xFF] ^ T_TableInv2[tmp[3] >> 16 & 0xFF] ^ T_TableInv3[tmp[2] >> 24] ^ m_RoundKeys[round * 4 + 1];
+        pOut32[2] = T_TableInv0[tmp[2] & 0xFF] ^ T_TableInv1[tmp[1] >> 8 & 0xFF] ^ T_TableInv2[tmp[0] >> 16 & 0xFF] ^ T_TableInv3[tmp[3] >> 24] ^ m_RoundKeys[round * 4 + 2];
+        pOut32[3] = T_TableInv0[tmp[3] & 0xFF] ^ T_TableInv1[tmp[2] >> 8 & 0xFF] ^ T_TableInv2[tmp[1] >> 16 & 0xFF] ^ T_TableInv3[tmp[0] >> 24] ^ m_RoundKeys[round * 4 + 3];
+        std::memcpy(tmp, pOut, crypto::AesBlockLength);
     }
+
+    tmp[0] = inv_s[pOut32[0] & 0xFF] |
+             inv_s[pOut32[3] >> 8 & 0xFF] << 8 |
+             inv_s[pOut32[2] >> 16 & 0xFF] << 16 |
+             inv_s[pOut32[1] >> 24 & 0xFF] << 24;
+    tmp[1] = inv_s[pOut32[1] & 0xFF] |
+             inv_s[pOut32[0] >> 8 & 0xFF] << 8 |
+             inv_s[pOut32[3] >> 16 & 0xFF] << 16 |
+             inv_s[pOut32[2] >> 24 & 0xFF] << 24;
+    tmp[2] = inv_s[pOut32[2] & 0xFF] |
+             inv_s[pOut32[1] >> 8 & 0xFF] << 8 |
+             inv_s[pOut32[0] >> 16 & 0xFF] << 16 |
+             inv_s[pOut32[3] >> 24 & 0xFF] << 24;
+    tmp[3] = inv_s[pOut32[3] & 0xFF] |
+             inv_s[pOut32[2] >> 8 & 0xFF] << 8 |
+             inv_s[pOut32[1] >> 16 & 0xFF] << 16 |
+             inv_s[pOut32[0] >> 24 & 0xFF] << 24;
 
     /* Substract First Roundkey */
     for(uint8_t i = 0; i < 4; i++) {
-        reinterpret_cast<uint32_t*>(output)[i] ^= reinterpret_cast<uint32_t*>(m_RoundKeys[0])[i];
+        pOut32[i] = tmp[i] ^ m_RoundKeys[i];
     }
 }
 

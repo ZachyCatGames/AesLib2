@@ -11,8 +11,8 @@ AesEncryptImpl<KeyLength>::AesEncryptImpl() = default;
 
 template<int KeyLength>
 AesEncryptImpl<KeyLength>::AesEncryptImpl(const void* pKey, size_t keySize) {
-    std::memcpy(m_RoundKeys[0], pKey, KeySize);
-    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys[0]);
+    std::memcpy(m_RoundKeys, pKey, KeySize);
+    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys);
 }
 
 template<int KeyLength>
@@ -20,8 +20,8 @@ AesEncryptImpl<KeyLength>::~AesEncryptImpl() = default;
 
 template<int KeyLength>
 void AesEncryptImpl<KeyLength>::Initialize(const void* pKey, size_t keySize) {
-    std::memcpy(m_RoundKeys[0], pKey, KeySize);
-    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys[0]);
+    std::memcpy(m_RoundKeys, pKey, KeySize);
+    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys);
 }
 
 template<int KeyLength>
@@ -37,20 +37,16 @@ void AesEncryptImpl<KeyLength>::EncryptBlock(void* pOut, const void* pIn) {
 
     /* Add roundkey */
     for(uint8_t i = 0; i < 4; i++) {
-        pOut32[i] = pIn32[i] ^ m_RoundKeys[0][i];
+        pOut32[i] = pIn32[i] ^ m_RoundKeys[i];
     }
 
     /* Shift Rows Right, Mix Columns, and Subsitute. */
     for(uint8_t round = 1; round <= m_Rounds - 2; round++) {
-
-        tmp[0] = T_Table0[pOut32[0] & 0xFF] ^ T_Table1[pOut32[1] >> 8 & 0xFF] ^ T_Table2[pOut32[2] >> 16 & 0xFF] ^ T_Table3[pOut32[3] >> 24];
-        tmp[1] = T_Table0[pOut32[1] & 0xFF] ^ T_Table1[pOut32[2] >> 8 & 0xFF] ^ T_Table2[pOut32[3] >> 16 & 0xFF] ^ T_Table3[pOut32[0] >> 24];
-        tmp[2] = T_Table0[pOut32[2] & 0xFF] ^ T_Table1[pOut32[3] >> 8 & 0xFF] ^ T_Table2[pOut32[0] >> 16 & 0xFF] ^ T_Table3[pOut32[1] >> 24];
-        tmp[3] = T_Table0[pOut32[3] & 0xFF] ^ T_Table1[pOut32[0] >> 8 & 0xFF] ^ T_Table2[pOut32[1] >> 16 & 0xFF] ^ T_Table3[pOut32[2] >> 24];
-
-        for(int i = 0; i < 4; ++i) {
-            pOut32[i] = tmp[i] ^ m_RoundKeys[round][i];
-        }
+        tmp[0] = T_Table0[pOut32[0] & 0xFF] ^ T_Table1[pOut32[1] >> 8 & 0xFF] ^ T_Table2[pOut32[2] >> 16 & 0xFF] ^ T_Table3[pOut32[3] >> 24] ^ m_RoundKeys[round * 4 + 0];
+        tmp[1] = T_Table0[pOut32[1] & 0xFF] ^ T_Table1[pOut32[2] >> 8 & 0xFF] ^ T_Table2[pOut32[3] >> 16 & 0xFF] ^ T_Table3[pOut32[0] >> 24] ^ m_RoundKeys[round * 4 + 1];
+        tmp[2] = T_Table0[pOut32[2] & 0xFF] ^ T_Table1[pOut32[3] >> 8 & 0xFF] ^ T_Table2[pOut32[0] >> 16 & 0xFF] ^ T_Table3[pOut32[1] >> 24] ^ m_RoundKeys[round * 4 + 2];
+        tmp[3] = T_Table0[pOut32[3] & 0xFF] ^ T_Table1[pOut32[0] >> 8 & 0xFF] ^ T_Table2[pOut32[1] >> 16 & 0xFF] ^ T_Table3[pOut32[2] >> 24] ^ m_RoundKeys[round * 4 + 3];
+        std::memcpy(pOut32, tmp, crypto::AesBlockLength);
     }
 
     /* Shift Rows Right and Subsitute */
@@ -73,7 +69,7 @@ void AesEncryptImpl<KeyLength>::EncryptBlock(void* pOut, const void* pIn) {
 
     /* Add roundkey */
     for(uint8_t i = 0; i < 4; i++) {
-        pOut32[i] = tmp[i] ^ m_RoundKeys[m_Rounds - 1][i];
+        pOut32[i] = tmp[i] ^ m_RoundKeys[(m_Rounds - 1) * 4 + i];
     }
 }
 
