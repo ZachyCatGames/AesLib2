@@ -67,7 +67,7 @@ add_library(AesLib STATIC
     "include/AesLib/detail/IAesDecryptor.h"
     "include/AesLib/detail/IAesEncryptor.h"
 
-    "include/AesLib/Aes128.h"
+    "include/AesLib/Aes.h"
     "include/AesLib/AesCommon.h"
     "include/AesLib/detail/AesLookupTables.h"
     "include/AesLib/AesEcbDecryptor.h" "source/AesEcbDecryptor.cpp"

@@ -1,7 +1,7 @@
 #include "test_AesCbcTest.h"
 #include "test_TestData.h"
 #include "test_CbcEncData.h"
-#include <AesLib/Aes128.h>
+#include <AesLib/Aes.h>
 #include <vector>
 
 namespace crypto {

@@ -1,6 +1,6 @@
 #include "test_AesEcbSampleVector.h"
 #include <cstdint>
-#include <AesLib/Aes128.h>
+#include <AesLib/Aes.h>
 
 namespace crypto {
 namespace test {
