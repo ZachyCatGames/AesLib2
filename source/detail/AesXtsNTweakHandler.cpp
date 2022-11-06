@@ -1,4 +1,4 @@
-#include <AesLib/detail/AesXtsTweakHandler.h>
+#include <AesLib/detail/AesXtsNTweakHandler.h>
 #include <AesLib/detail/AesGFMul.h>
 #include <AesLib/detail/AesImplBuilder.h>
 #include <AesLib/detail/AesByteSwap.h>
@@ -8,25 +8,25 @@ namespace crypto {
 namespace detail {
 
 template<int KeyLength>
-AesXtsTweakHandler<KeyLength>::AesXtsTweakHandler() = default;
+AesXtsNTweakHandler<KeyLength>::AesXtsNTweakHandler() = default;
 
 template<int KeyLength>
-AesXtsTweakHandler<KeyLength>::AesXtsTweakHandler(const void* pKey, size_t keySize) :
+AesXtsNTweakHandler<KeyLength>::AesXtsNTweakHandler(const void* pKey, size_t keySize) :
     m_pEncryptor(crypto::detail::BuildEncryptor<KeyLength>(pKey, keySize))
 {
     /* ... */
 }
 
 template<int KeyLength>
-AesXtsTweakHandler<KeyLength>::~AesXtsTweakHandler() = default;
+AesXtsNTweakHandler<KeyLength>::~AesXtsNTweakHandler() = default;
 
 template<int KeyLength>
-void AesXtsTweakHandler<KeyLength>::Initialize(const void* pKey, size_t keySize) {
+void AesXtsNTweakHandler<KeyLength>::Initialize(const void* pKey, size_t keySize) {
     m_pEncryptor = crypto::detail::BuildEncryptor<KeyLength>(pKey, keySize);
 }
 
 template<int KeyLength>
-void AesXtsTweakHandler<KeyLength>::SetupTweak(void* pOut, size_t curSector, size_t sectAddr) {
+void AesXtsNTweakHandler<KeyLength>::SetupTweak(void* pOut, size_t curSector, size_t sectAddr) {
     uint64_t* xtsTweak = static_cast<uint64_t*>(pOut);
 
     xtsTweak[0] = 0;
@@ -41,9 +41,9 @@ void AesXtsTweakHandler<KeyLength>::SetupTweak(void* pOut, size_t curSector, siz
     }
 }
 
-template class AesXtsTweakHandler<128>;
-template class AesXtsTweakHandler<192>;
-template class AesXtsTweakHandler<256>;
+template class AesXtsNTweakHandler<128>;
+template class AesXtsNTweakHandler<192>;
+template class AesXtsNTweakHandler<256>;
 
 } // namespace detail
 } // namespace crypto
