@@ -5,15 +5,15 @@
 
 namespace crypto {
 
-template<int KeyLength>
-AesXtsEncryptor<KeyLength>::AesXtsEncryptor() :
+template<int KeyLength, typename TweakHandler>
+AesXtsEncryptor<KeyLength, TweakHandler>::AesXtsEncryptor() :
     m_pEncryptor(crypto::detail::BuildEncryptor<KeyLength>())
 {
     /* ... */
 }
 
-template<int KeyLength>
-AesXtsEncryptor<KeyLength>::AesXtsEncryptor(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) :
+template<int KeyLength, typename TweakHandler>
+AesXtsEncryptor<KeyLength, TweakHandler>::AesXtsEncryptor(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) :
     m_pEncryptor(crypto::detail::BuildEncryptor<KeyLength>(pKey1, key1Size)),
     m_TweakHandler(pKey2, key2Size),
     m_SectorSize(sectSize)
@@ -21,23 +21,23 @@ AesXtsEncryptor<KeyLength>::AesXtsEncryptor(const void* pKey1, size_t key1Size, 
     /* ... */
 }
 
-template<int KeyLength>
-AesXtsEncryptor<KeyLength>::~AesXtsEncryptor() = default;
+template<int KeyLength, typename TweakHandler>
+AesXtsEncryptor<KeyLength, TweakHandler>::~AesXtsEncryptor() = default;
 
-template<int KeyLength>
-void AesXtsEncryptor<KeyLength>::Initialize(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) {
+template<int KeyLength, typename TweakHandler>
+void AesXtsEncryptor<KeyLength, TweakHandler>::Initialize(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) {
     m_pEncryptor->Initialize(pKey1, key1Size);
     m_TweakHandler.Initialize(pKey2, key2Size);
     m_SectorSize = sectSize;
 }
 
-template<int KeyLength>
-void AesXtsEncryptor<KeyLength>::Finalize() {
+template<int KeyLength, typename TweakHandler>
+void AesXtsEncryptor<KeyLength, TweakHandler>::Finalize() {
     m_pEncryptor->Finalize();
 }
 
-template<int KeyLength>
-crypto::AesResult AesXtsEncryptor<KeyLength>::EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr) {
+template<int KeyLength, typename TweakHandler>
+crypto::AesResult AesXtsEncryptor<KeyLength, TweakHandler>::EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr) {
     uint8_t* pOut8 = static_cast<uint8_t*>(pOut);
     const uint8_t* pIn8 = static_cast<const uint8_t*>(pIn);
     uint8_t xtsTweak[Aes128BlockLength];
@@ -83,8 +83,12 @@ crypto::AesResult AesXtsEncryptor<KeyLength>::EncryptData(void* pOut, size_t out
     return crypto::AesResult::Success;
 }
 
-template class AesXtsEncryptor<128>;
-template class AesXtsEncryptor<192>;
-template class AesXtsEncryptor<256>;
+template class AesXtsEncryptor<128, crypto::detail::AesXtsTweakHandler<128>>;
+template class AesXtsEncryptor<192, crypto::detail::AesXtsTweakHandler<192>>;
+template class AesXtsEncryptor<256, crypto::detail::AesXtsTweakHandler<256>>;
+
+template class AesXtsEncryptor<128, crypto::detail::AesXtsNTweakHandler<128>>;
+template class AesXtsEncryptor<192, crypto::detail::AesXtsNTweakHandler<192>>;
+template class AesXtsEncryptor<256, crypto::detail::AesXtsNTweakHandler<256>>;
 
 } // namespace crypto

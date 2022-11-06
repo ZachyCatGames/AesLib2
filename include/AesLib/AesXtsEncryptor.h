@@ -1,12 +1,13 @@
 #include <AesLib/AesCommon.h>
 #include <AesLib/detail/AesXtsTweakHandler.h>
+#include <AesLib/detail/AesXtsNTweakHandler.h>
 #include <AesLib/detail/IAesEncryptor.h>
 #include <cstdint>
 #include <cstddef>
 
 namespace crypto {
 
-template<int KeyLength>
+template<int KeyLength, typename TweakHandler>
 class AesXtsEncryptor {
 public:
     static constexpr int KeySize = KeyLength / 8;
@@ -23,12 +24,16 @@ public:
 
 private:
     std::unique_ptr<crypto::detail::IAesEncryptor<KeyLength>> m_pEncryptor;
-    crypto::detail::AesXtsTweakHandler<KeyLength> m_TweakHandler;
+    TweakHandler m_TweakHandler;
     size_t m_SectorSize;
 };
 
-using AesXtsEncryptor128 = AesXtsEncryptor<128>;
-using AesXtsEncryptor192 = AesXtsEncryptor<192>;
-using AesXtsEncryptor256 = AesXtsEncryptor<256>;
+using AesXtsEncryptor128 = AesXtsEncryptor<128, crypto::detail::AesXtsTweakHandler<128>>;
+using AesXtsEncryptor192 = AesXtsEncryptor<192, crypto::detail::AesXtsTweakHandler<192>>;
+using AesXtsEncryptor256 = AesXtsEncryptor<256, crypto::detail::AesXtsTweakHandler<256>>;
+
+using AesXtsNEncryptor128 = AesXtsEncryptor<128, crypto::detail::AesXtsNTweakHandler<128>>;
+using AesXtsNEncryptor192 = AesXtsEncryptor<192, crypto::detail::AesXtsNTweakHandler<192>>;
+using AesXtsNEncryptor256 = AesXtsEncryptor<256, crypto::detail::AesXtsNTweakHandler<256>>;
 
 } // namespace crypto

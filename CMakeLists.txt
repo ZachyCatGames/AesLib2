@@ -64,6 +64,7 @@ add_library(AesLib STATIC
     "include/AesLib/detail/AesExpandKeyImpl.h" "source/detail/AesExpandKeyImpl.cpp"
     "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"
     "include/AesLib/detail/AesXtsTweakHandler.h" "source/detail/AesXtsTweakHandler.cpp"
+    "include/AesLib/detail/AesXtsNTweakHandler.h" "source/detail/AesXtsNTweakHandler.cpp"
     "include/AesLib/detail/IAesDecryptor.h"
     "include/AesLib/detail/IAesEncryptor.h"
 
