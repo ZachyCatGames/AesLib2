@@ -12,10 +12,10 @@ constexpr T ByteSwap(T in) {
     int shift = size - 1;
     while(pos != 0) {
         if(shift > 0) {
-            out |= (in & (0xFF << (pos * 8))) >> (shift * 8);
+            out |= (in & ((int64_t)0xFF << (pos * 8))) >> (shift * 8);
         }
         else {
-            out |= (in & (0xFF << (pos * 8))) << (-1 * shift * 8);
+            out |= (in & ((int64_t)0xFF << (pos * 8))) << (-1 * shift * 8);
         }
         --pos;
         shift -= 2;

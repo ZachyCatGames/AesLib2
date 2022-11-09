@@ -78,6 +78,7 @@ add_library(AesLib STATIC
     "include/AesLib/AesXtsDecryptor.h" "source/AesXtsDecryptor.cpp"
     "include/AesLib/AesXtsEncryptor.h" "source/AesXtsEncryptor.cpp"
     "include/AesLib/AesCtr.h" "source/AesCtr.cpp" 
+    "include/AesLib/AesCtrCounter.h" "source/AesCtrCounter.cpp"
 
     ${PLATFORM_SPECIFIC_SRC}
 )
@@ -92,5 +93,6 @@ add_executable(AesLibTest
     "test_program/test_AesCbcTest.h" "test_program/test_AesCbcTest.cpp"
     "test_program/test_Aes256Exp.h" "test_program/test_Aes256Exp.cpp"
     "test_program/test_AesEcbSampleVector.h" "test_program/test_AesEcbSampleVector.cpp"
+    "test_program/test_UpdateCounter.h" "test_program/test_UpdateCounter.cpp"
 )
 target_link_libraries(AesLibTest PUBLIC AesLib)
