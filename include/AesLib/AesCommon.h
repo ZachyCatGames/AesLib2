@@ -12,8 +12,11 @@
 constexpr static inline size_t Aes128BlockLength = 0x10;
 constexpr static inline size_t Aes128RoundKeyArraySize = (sizeof(uint8_t) * 11 * 16);
 
-//#define ALIGN(amount) __attribute__((aligned(amount)))
+#ifdef _MSC_VER
 #define ALIGN(amount) __declspec(align(amount))
+#else
+#define ALIGN(amount) __attribute__((aligned(amount)))
+#endif
 
 enum Aes128Result {
     Result_Success = 0,

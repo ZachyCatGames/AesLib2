@@ -1,6 +1,7 @@
 #include "test_UpdateCounter.h"
 #include <AesLib/AesCtrCounter.h>
 #include <limits>
+#include <cstdio>
 
 namespace crypto {
 namespace test {
