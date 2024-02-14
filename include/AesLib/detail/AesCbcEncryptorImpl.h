@@ -20,7 +20,7 @@ public:
     /* CBC Encrypt Data */
     AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t size);
 private:
-    UniqueEncryptor&& m_pEncryptor;
+    UniqueEncryptor m_pEncryptor;
     uint8_t m_Iv[16];
 }; // class AesCbcEncryptorImpl
 

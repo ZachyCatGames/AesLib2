@@ -56,6 +56,9 @@ else()
 endif()
 # 
 
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
+
 # Add source files to lib.
 add_library(AesLib STATIC
     "include/AesLib/detail/AesCbcDecryptorImpl.h" "source/detail/AesCbcDecryptorImpl.cpp"
