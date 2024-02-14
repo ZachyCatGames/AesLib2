@@ -11,7 +11,7 @@ namespace arch {
 namespace amd64 {
 
 template<int KeyLength>
-class AesEncryptImpl : public IAesEncryptor<KeyLength> {
+class AesEncryptImpl : public IAesEncryptor {
 public:
     static constexpr int KeySize = KeyLength / 8;
 

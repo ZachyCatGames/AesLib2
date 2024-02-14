@@ -9,7 +9,7 @@ namespace arch {
 namespace aarch64 {
 
 template<int KeyLength>
-class AesDecryptImpl : public IAesDecryptor<KeyLength> {
+class AesDecryptImpl : public IAesDecryptor {
 public:
     AesDecryptImpl() = default;
     AesDecryptImpl(const void* pKey, size_t keySize) { this->Initialize(pKey, keySize); }

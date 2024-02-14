@@ -1,33 +1,18 @@
 #pragma once
 #include <AesLib/AesCommon.h>
-#include <AesLib/detail/IAesEncryptor.h>
-#include <cstdint>
-#include <memory>
+#include <AesLib/detail/AesCbcEncryptorImpl.h>
 
 namespace crypto {
 
 template<int KeyLength>
-class AesCbcEncryptor {
+class AesCbcEncryptor : public detail::AesCbcEncryptorImpl {
 public:
     static constexpr int KeySize = KeyLength / 8;
-    static constexpr int IvSize = AesBlockLength;
-
 public:
     AesCbcEncryptor();
     AesCbcEncryptor(const void* pKey, size_t keySize, const void* pIv, size_t ivSize);
     ~AesCbcEncryptor();
-
-    void Initialize(const void* pKey, size_t keySize, const void* pIv, size_t ivSize);
-    void Finalize();
-
-public:
-    /* CBC Encrypt Data */
-    AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t size);
-
-private:
-    std::unique_ptr<detail::IAesEncryptor<KeyLength>> m_pEncryptor;
-    uint8_t m_AesIv[16];
-};
+}; // class AesCbcEncryptor
 
 using AesCbcEncryptor128 = AesCbcEncryptor<128>;
 using AesCbcEncryptor192 = AesCbcEncryptor<192>;

@@ -58,10 +58,17 @@ endif()
 
 # Add source files to lib.
 add_library(AesLib STATIC
+    "include/AesLib/detail/AesCbcDecryptorImpl.h" "source/detail/AesCbcDecryptorImpl.cpp"
+    "include/AesLib/detail/AesCbcEncryptorImpl.h" "source/detail/AesCbcEncryptorImpl.cpp"
+    "include/AesLib/detail/AesCtrImpl.h" "source/detail/AesCtrImpl.cpp"
     "include/AesLib/detail/AesDecryptImpl.cpu-generic.h" "source/detail/AesDecryptImpl.cpu-generic.cpp"
+    "include/AesLib/detail/AesEcbDecryptorImpl.h" "source/detail/AesEcbDecryptorImpl.cpp" 
+    "include/AesLib/detail/AesEcbEncryptorImpl.h" "source/detail/AesEcbEncryptorImpl.cpp"
     "include/AesLib/detail/AesEncryptImpl.cpu-generic.h" "source/detail/AesEncryptImpl.cpu-generic.cpp"
     "include/AesLib/detail/AesExpandKeyImpl.h" "source/detail/AesExpandKeyImpl.cpp"
     "include/AesLib/detail/AesGFMul.h" "source/detail/AesGFMul.cpp"
+    "include/AesLib/detail/AesXtsDecryptorImpl.h" "source/detail/AesXtsDecryptorImpl.cpp"
+    "include/AesLib/detail/AesXtsEncryptorImpl.h" "source/detail/AesXtsEncryptorImpl.cpp"
     "include/AesLib/detail/AesXtsTweakHandler.h" "source/detail/AesXtsTweakHandler.cpp"
     "include/AesLib/detail/AesXtsNTweakHandler.h" "source/detail/AesXtsNTweakHandler.cpp"
     "include/AesLib/detail/IAesDecryptor.h"

@@ -8,8 +8,10 @@
 namespace crypto {
 namespace detail {
 
+namespace {
+
 template<int KeyLength, typename... Args>
-std::unique_ptr<IAesDecryptor<KeyLength>> BuildDecryptor(Args... args) {
+UniqueDecryptor BuildDecryptorImpl(Args... args) {
     /* Check for AES extension support. */
     if(arch::amd64::SupportsAesExtensions())
         return std::make_unique<arch::amd64::AesDecryptImpl<KeyLength>>(args...);
@@ -18,7 +20,7 @@ std::unique_ptr<IAesDecryptor<KeyLength>> BuildDecryptor(Args... args) {
 }
 
 template<int KeyLength, typename... Args>
-std::unique_ptr<IAesEncryptor<KeyLength>> BuildEncryptor(Args... args) {
+UniqueEncryptor BuildEncryptorImpl(Args... args) {
     /* Check for AES extension support. */
     if(arch::amd64::SupportsAesExtensions())
         return std::make_unique<arch::amd64::AesEncryptImpl<KeyLength>>(args...);
@@ -26,19 +28,35 @@ std::unique_ptr<IAesEncryptor<KeyLength>> BuildEncryptor(Args... args) {
     return std::make_unique<AesEncryptImpl<KeyLength>>(args...);
 }
 
-template std::unique_ptr<IAesDecryptor<128>> BuildDecryptor(void);
-template std::unique_ptr<IAesDecryptor<128>> BuildDecryptor(const void*, size_t);
-template std::unique_ptr<IAesDecryptor<192>> BuildDecryptor(void);
-template std::unique_ptr<IAesDecryptor<192>> BuildDecryptor(const void*, size_t);
-template std::unique_ptr<IAesDecryptor<256>> BuildDecryptor(void);
-template std::unique_ptr<IAesDecryptor<256>> BuildDecryptor(const void*, size_t);
+} // namespace
 
-template std::unique_ptr<IAesEncryptor<128>> BuildEncryptor(void);
-template std::unique_ptr<IAesEncryptor<128>> BuildEncryptor(const void*, size_t);
-template std::unique_ptr<IAesEncryptor<192>> BuildEncryptor(void);
-template std::unique_ptr<IAesEncryptor<192>> BuildEncryptor(const void*, size_t);
-template std::unique_ptr<IAesEncryptor<256>> BuildEncryptor(void);
-template std::unique_ptr<IAesEncryptor<256>> BuildEncryptor(const void*, size_t);
+template<int KeyLength>
+UniqueDecryptor BuildDecryptor() { return BuildDecryptorImpl<KeyLength>(); }
+
+template<int KeyLength>
+UniqueDecryptor BuildDecryptor(const void* pKey, std::size_t keySize) { return BuildDecryptorImpl<KeyLength>(pKey, keySize); }
+
+template<int KeyLength>
+UniqueEncryptor BuildEncryptor() { return BuildEncryptorImpl<KeyLength>(); }
+
+template<int KeyLength>
+UniqueEncryptor BuildEncryptor(const void* pKey, std::size_t keySize) { return BuildEncryptorImpl<KeyLength>(pKey, keySize); }
+
+template UniqueDecryptor BuildDecryptor<128>();
+template UniqueDecryptor BuildDecryptor<192>();
+template UniqueDecryptor BuildDecryptor<256>();
+
+template UniqueDecryptor BuildDecryptor<128>(const void* pKey, std::size_t keySize);
+template UniqueDecryptor BuildDecryptor<192>(const void* pKey, std::size_t keySize);
+template UniqueDecryptor BuildDecryptor<256>(const void* pKey, std::size_t keySize);
+
+template UniqueEncryptor BuildEncryptor<128>();
+template UniqueEncryptor BuildEncryptor<192>();
+template UniqueEncryptor BuildEncryptor<256>();
+
+template UniqueEncryptor BuildEncryptor<128>(const void* pKey, std::size_t keySize);
+template UniqueEncryptor BuildEncryptor<192>(const void* pKey, std::size_t keySize);
+template UniqueEncryptor BuildEncryptor<256>(const void* pKey, std::size_t keySize);
 
 } // namespace detail
 } // namespace crypto

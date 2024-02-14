@@ -7,26 +7,16 @@
 namespace crypto {
 namespace detail {
 
-template<int KeyLength>
-AesXtsNTweakHandler<KeyLength>::AesXtsNTweakHandler() = default;
+AesXtsNTweakHandler::AesXtsNTweakHandler(UniqueEncryptor&& pEnc) :
+    m_pEncryptor(std::move(pEnc)) {}
 
-template<int KeyLength>
-AesXtsNTweakHandler<KeyLength>::AesXtsNTweakHandler(const void* pKey, size_t keySize) :
-    m_pEncryptor(BuildEncryptor<KeyLength>(pKey, keySize))
-{
-    /* ... */
+AesXtsNTweakHandler::~AesXtsNTweakHandler() = default;
+
+void AesXtsNTweakHandler::Initialize(const void* pKey, size_t keySize) {
+    m_pEncryptor->Initialize(pKey, keySize);
 }
 
-template<int KeyLength>
-AesXtsNTweakHandler<KeyLength>::~AesXtsNTweakHandler() = default;
-
-template<int KeyLength>
-void AesXtsNTweakHandler<KeyLength>::Initialize(const void* pKey, size_t keySize) {
-    m_pEncryptor = BuildEncryptor<KeyLength>(pKey, keySize);
-}
-
-template<int KeyLength>
-void AesXtsNTweakHandler<KeyLength>::SetupTweak(void* pOut, size_t curSector, size_t sectAddr) {
+void AesXtsNTweakHandler::SetupTweak(void* pOut, size_t curSector, size_t sectAddr) {
     uint64_t* xtsTweak = static_cast<uint64_t*>(pOut);
 
     xtsTweak[0] = 0;
@@ -40,10 +30,6 @@ void AesXtsNTweakHandler<KeyLength>::SetupTweak(void* pOut, size_t curSector, si
         GFMul(xtsTweak, xtsTweak);
     }
 }
-
-template class AesXtsNTweakHandler<128>;
-template class AesXtsNTweakHandler<192>;
-template class AesXtsNTweakHandler<256>;
 
 } // namespace detail
 } // namespace crypto

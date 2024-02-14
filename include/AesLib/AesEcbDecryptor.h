@@ -1,29 +1,18 @@
 #pragma once
 #include <AesLib/AesCommon.h>
-#include <AesLib/detail/IAesDecryptor.h>
-#include <memory>
+#include <AesLib/detail/AesEcbDecryptorImpl.h>
 
 namespace crypto {
 
 template<int KeyLength>
-class AesEcbDecryptor {
+class AesEcbDecryptor : public detail::AesEcbDecryptorImpl {
 public:
     static constexpr int KeySize = KeyLength / 8;
-
 public:
     AesEcbDecryptor();
     AesEcbDecryptor(const void* pKey, size_t keySize);
     ~AesEcbDecryptor();
-
-    void Initialize(const void* pKey, size_t keySize);
-    void Finalize();
-
-    AesResult DecryptBlock(void* pOut, const void* pIn);
-    AesResult DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
-
-private:
-    std::unique_ptr<detail::IAesDecryptor<KeyLength>> m_pImpl;
-};
+}; // class AesEcbDecryptor
 
 using AesEcbDecryptor128 = AesEcbDecryptor<128>;
 using AesEcbDecryptor192 = AesEcbDecryptor<192>;

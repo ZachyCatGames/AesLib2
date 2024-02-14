@@ -1,10 +1,10 @@
 #pragma once
 #include <cstddef>
+#include <memory>
 
 namespace crypto {
 namespace detail {
 
-template<int KeyLength>
 class IAesDecryptor {
 public:
     virtual ~IAesDecryptor() = default;
@@ -14,6 +14,8 @@ public:
 
     virtual void DecryptBlock(void* pOut, const void* pIn) = 0;
 };
+
+using UniqueDecryptor = std::unique_ptr<IAesDecryptor>;
 
 } // namespace detail
 } // namespace crypto
