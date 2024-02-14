@@ -1,7 +1,6 @@
 #include <AesLib/detail/AesEncryptImpl.cpu-generic.h>
 #include <AesLib/detail/AesExpandKeyImpl.h>
 #include <AesLib/detail/AesLookupTables.h>
-#include <AesLib/detail/AesByteSwap.h>
 
 namespace crypto {
 namespace detail {

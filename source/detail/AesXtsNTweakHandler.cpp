@@ -1,8 +1,8 @@
 #include <AesLib/detail/AesXtsNTweakHandler.h>
 #include <AesLib/detail/AesGFMul.h>
 #include <AesLib/detail/AesImplBuilder.h>
-#include <AesLib/detail/AesByteSwap.h>
 #include <AesLib/AesCommon.h>
+#include <bit>
 
 namespace crypto {
 namespace detail {
@@ -30,7 +30,7 @@ void AesXtsNTweakHandler<KeyLength>::SetupTweak(void* pOut, size_t curSector, si
     uint64_t* xtsTweak = static_cast<uint64_t*>(pOut);
 
     xtsTweak[0] = 0;
-    xtsTweak[1] = ByteSwap(curSector);
+    xtsTweak[1] = std::byteswap(curSector);
 
     /* Encrypt Tweak with key2 */
     m_pEncryptor->EncryptBlock(reinterpret_cast<uint8_t*>(xtsTweak), reinterpret_cast<uint8_t*>(xtsTweak));

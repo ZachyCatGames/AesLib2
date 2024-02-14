@@ -7,7 +7,7 @@ project(AesLib)
 enable_language(CXX ASM)
 
 # Set standard.
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED yes)
 
 # Add include dir
@@ -58,7 +58,6 @@ endif()
 
 # Add source files to lib.
 add_library(AesLib STATIC
-    "include/AesLib/detail/AesByteSwap.h"
     "include/AesLib/detail/AesDecryptImpl.cpu-generic.h" "source/detail/AesDecryptImpl.cpu-generic.cpp"
     "include/AesLib/detail/AesEncryptImpl.cpu-generic.h" "source/detail/AesEncryptImpl.cpu-generic.cpp"
     "include/AesLib/detail/AesExpandKeyImpl.h" "source/detail/AesExpandKeyImpl.cpp"
