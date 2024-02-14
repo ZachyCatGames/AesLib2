@@ -20,20 +20,20 @@ public:
     void Initialize(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize);
     void Finalize();
 
-    crypto::AesResult DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr);
+    AesResult DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr);
 
 private:
-    std::unique_ptr<crypto::detail::IAesDecryptor<KeyLength>> m_pDecryptor;
+    std::unique_ptr<detail::IAesDecryptor<KeyLength>> m_pDecryptor;
     TweakHandler m_TweakHandler;
     size_t m_SectorSize;
 };
 
-using AesXtsDecryptor128 = AesXtsDecryptor<128, crypto::detail::AesXtsTweakHandler<128>>;
-using AesXtsDecryptor192 = AesXtsDecryptor<192, crypto::detail::AesXtsTweakHandler<192>>;
-using AesXtsDecryptor256 = AesXtsDecryptor<256, crypto::detail::AesXtsTweakHandler<256>>;
+using AesXtsDecryptor128 = AesXtsDecryptor<128, detail::AesXtsTweakHandler<128>>;
+using AesXtsDecryptor192 = AesXtsDecryptor<192, detail::AesXtsTweakHandler<192>>;
+using AesXtsDecryptor256 = AesXtsDecryptor<256, detail::AesXtsTweakHandler<256>>;
 
-using AesXtsNDecryptor128 = AesXtsDecryptor<128, crypto::detail::AesXtsNTweakHandler<128>>;
-using AesXtsNDecryptor192 = AesXtsDecryptor<192, crypto::detail::AesXtsNTweakHandler<192>>;
-using AesXtsNDecryptor256 = AesXtsDecryptor<256, crypto::detail::AesXtsNTweakHandler<256>>;
+using AesXtsNDecryptor128 = AesXtsDecryptor<128, detail::AesXtsNTweakHandler<128>>;
+using AesXtsNDecryptor192 = AesXtsDecryptor<192, detail::AesXtsNTweakHandler<192>>;
+using AesXtsNDecryptor256 = AesXtsDecryptor<256, detail::AesXtsNTweakHandler<256>>;
 
 } // namespace crypto

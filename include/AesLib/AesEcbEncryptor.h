@@ -18,11 +18,11 @@ public:
     void Initialize(const void* pKey, size_t keySize);
     void Finalize();
 
-    crypto::AesResult EncryptBlock(void* pOut, const void* pIn);
-    crypto::AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
+    AesResult EncryptBlock(void* pOut, const void* pIn);
+    AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
 
 private:
-    std::unique_ptr<crypto::detail::IAesEncryptor<KeyLength>> m_pImpl;
+    std::unique_ptr<detail::IAesEncryptor<KeyLength>> m_pImpl;
 };
 
 using AesEcbEncryptor128 = AesEcbEncryptor<128>;

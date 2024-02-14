@@ -10,7 +10,7 @@ bool SupportsAesExtensions() {
     int eax, ebx, ecx, edx;
 
     /* Get CpuId. */
-    crypto::detail::arch::amd64::GetCpuId(1, &eax, &ebx, &ecx, &edx);
+    arch::amd64::GetCpuId(1, &eax, &ebx, &ecx, &edx);
 
     return ecx & (1 << 25);
 }

@@ -5,14 +5,14 @@ namespace crypto {
 
 template<int KeyLength>
 AesEcbDecryptor<KeyLength>::AesEcbDecryptor() :
-    m_pImpl(crypto::detail::BuildDecryptor<KeyLength>())
+    m_pImpl(detail::BuildDecryptor<KeyLength>())
 {
     /* ... */
 }
 
 template<int KeyLength>
 AesEcbDecryptor<KeyLength>::AesEcbDecryptor(const void* pKey, size_t keySize) :
-    m_pImpl(crypto::detail::BuildDecryptor<KeyLength>(pKey, keySize))
+    m_pImpl(detail::BuildDecryptor<KeyLength>(pKey, keySize))
 {
     /* ... */
 }
@@ -31,27 +31,27 @@ void AesEcbDecryptor<KeyLength>::Finalize() {
 }
 
 template<int KeyLength>
-crypto::AesResult AesEcbDecryptor<KeyLength>::DecryptBlock(void* pOut, const void* pIn) {
+AesResult AesEcbDecryptor<KeyLength>::DecryptBlock(void* pOut, const void* pIn) {
     m_pImpl->DecryptBlock(static_cast<uint8_t*>(pOut), static_cast<const uint8_t*>(pIn));
 
-    return crypto::AesResult::Success;
+    return AesResult::Success;
 }
 
 template<int KeyLength>
-crypto::AesResult AesEcbDecryptor<KeyLength>::DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize) {
+AesResult AesEcbDecryptor<KeyLength>::DecryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize) {
     /* Compare in/out sizes. */
     if(outSize < inSize)
-        return crypto::AesResult::OutTooSmall;
+        return AesResult::OutTooSmall;
 
     /* Check alignment. */
-    if(inSize % crypto::AesBlockLength)
-        return crypto::AesResult::NotAligned;
+    if(inSize % AesBlockLength)
+        return AesResult::NotAligned;
 
-    for(size_t i = 0; i < inSize; i += crypto::AesBlockLength) {
+    for(size_t i = 0; i < inSize; i += AesBlockLength) {
         m_pImpl->DecryptBlock(static_cast<uint8_t*>(pOut) + i, static_cast<const uint8_t*>(pIn) + i);
     }
 
-    return crypto::AesResult::Success;
+    return AesResult::Success;
 }
 
 template class AesEcbDecryptor<128>;

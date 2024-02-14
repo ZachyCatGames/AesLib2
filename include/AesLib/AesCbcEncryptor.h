@@ -10,7 +10,7 @@ template<int KeyLength>
 class AesCbcEncryptor {
 public:
     static constexpr int KeySize = KeyLength / 8;
-    static constexpr int IvSize = crypto::AesBlockLength;
+    static constexpr int IvSize = AesBlockLength;
 
 public:
     AesCbcEncryptor();
@@ -22,10 +22,10 @@ public:
 
 public:
     /* CBC Encrypt Data */
-    crypto::AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t size);
+    AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t size);
 
 private:
-    std::unique_ptr<crypto::detail::IAesEncryptor<KeyLength>> m_pEncryptor;
+    std::unique_ptr<detail::IAesEncryptor<KeyLength>> m_pEncryptor;
     uint8_t m_AesIv[16];
 };
 

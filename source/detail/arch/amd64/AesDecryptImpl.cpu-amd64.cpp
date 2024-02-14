@@ -74,7 +74,7 @@ void AesDecryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) {
 
     // TODO: Properly deal with AES192/AES256 keygen.
     std::memcpy(m_RoundKeyStorage, pKey, KeySize);
-    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
+    AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
 
     for(int i = 1; i < m_Rounds - 1; ++i) {
         invKey = _mm_loadu_si128(reinterpret_cast<__m128i*>(m_RoundKeyStorage[i]));

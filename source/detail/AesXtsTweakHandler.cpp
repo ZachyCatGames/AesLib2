@@ -11,7 +11,7 @@ AesXtsTweakHandler<KeyLength>::AesXtsTweakHandler() = default;
 
 template<int KeyLength>
 AesXtsTweakHandler<KeyLength>::AesXtsTweakHandler(const void* pKey, size_t keySize) :
-    m_pEncryptor(crypto::detail::BuildEncryptor<KeyLength>(pKey, keySize))
+    m_pEncryptor(BuildEncryptor<KeyLength>(pKey, keySize))
 {
     /* ... */
 }
@@ -21,7 +21,7 @@ AesXtsTweakHandler<KeyLength>::~AesXtsTweakHandler() = default;
 
 template<int KeyLength>
 void AesXtsTweakHandler<KeyLength>::Initialize(const void* pKey, size_t keySize) {
-    m_pEncryptor = crypto::detail::BuildEncryptor<KeyLength>(pKey, keySize);
+    m_pEncryptor = BuildEncryptor<KeyLength>(pKey, keySize);
 }
 
 template<int KeyLength>
@@ -44,8 +44,8 @@ void AesXtsTweakHandler<KeyLength>::SetupTweak(void* pOut, size_t curSector, siz
     m_pEncryptor->EncryptBlock(reinterpret_cast<uint8_t*>(xtsTweak), reinterpret_cast<uint8_t*>(xtsTweak));
 
     /* Update tweak if needed */
-    for(size_t i = sectAddr/crypto::AesBlockLength; i < 0; i--) {
-        crypto::detail::GFMul(xtsTweak, xtsTweak);
+    for(size_t i = sectAddr/AesBlockLength; i < 0; i--) {
+        GFMul(xtsTweak, xtsTweak);
     }
 }
 

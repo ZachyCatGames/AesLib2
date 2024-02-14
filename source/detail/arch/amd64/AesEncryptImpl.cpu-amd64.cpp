@@ -63,7 +63,7 @@ void AesEncryptImpl<KeyLength>::ExpandKeyImpl(const void* pKey) {
 
     // TODO: Properly deal with AES192/AES256 keygen.
     std::memcpy(m_RoundKeyStorage, pKey, KeySize);
-    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
+    AesExpandKeyImpl<KeyLength>(m_RoundKeyStorage);
 }
 
 template<int KeyLength>

@@ -7,14 +7,14 @@ namespace crypto {
 
 template<int KeyLength, typename TweakHandler>
 AesXtsEncryptor<KeyLength, TweakHandler>::AesXtsEncryptor() :
-    m_pEncryptor(crypto::detail::BuildEncryptor<KeyLength>())
+    m_pEncryptor(detail::BuildEncryptor<KeyLength>())
 {
     /* ... */
 }
 
 template<int KeyLength, typename TweakHandler>
 AesXtsEncryptor<KeyLength, TweakHandler>::AesXtsEncryptor(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize) :
-    m_pEncryptor(crypto::detail::BuildEncryptor<KeyLength>(pKey1, key1Size)),
+    m_pEncryptor(detail::BuildEncryptor<KeyLength>(pKey1, key1Size)),
     m_TweakHandler(pKey2, key2Size),
     m_SectorSize(sectSize)
 {
@@ -37,7 +37,7 @@ void AesXtsEncryptor<KeyLength, TweakHandler>::Finalize() {
 }
 
 template<int KeyLength, typename TweakHandler>
-crypto::AesResult AesXtsEncryptor<KeyLength, TweakHandler>::EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr) {
+AesResult AesXtsEncryptor<KeyLength, TweakHandler>::EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr) {
     uint8_t* pOut8 = static_cast<uint8_t*>(pOut);
     const uint8_t* pIn8 = static_cast<const uint8_t*>(pIn);
     uint8_t xtsTweak[Aes128BlockLength];
@@ -48,7 +48,7 @@ crypto::AesResult AesXtsEncryptor<KeyLength, TweakHandler>::EncryptData(void* pO
 
     /* Assert that data is aligned to 0x10 bytes */
     if(inSize % Aes128BlockLength != 0) {
-        return crypto::AesResult::NotAligned;
+        return AesResult::NotAligned;
     }
 
     /* Setup tweak */
@@ -56,16 +56,16 @@ crypto::AesResult AesXtsEncryptor<KeyLength, TweakHandler>::EncryptData(void* pO
 
     while(pos < inSize) {
         /* XOR Encrypted Tweak with Input */
-        crypto::detail::AesXorBlock128(tmp, xtsTweak, pIn8 + pos);
+        detail::AesXorBlock128(tmp, xtsTweak, pIn8 + pos);
 
         /* Encrypt Data with key1 */
         m_pEncryptor->EncryptBlock(tmp, tmp);
 
         /* XOR Tweak with output */
-        crypto::detail::AesXorBlock128(pOut8 + pos, tmp, xtsTweak);
+        detail::AesXorBlock128(pOut8 + pos, tmp, xtsTweak);
 
         /* Multiply tweak */
-        crypto::detail::GFMul(xtsTweak, xtsTweak);
+        detail::GFMul(xtsTweak, xtsTweak);
 
         /* Update position and sector address */
         pos           += Aes128BlockLength;
@@ -80,15 +80,15 @@ crypto::AesResult AesXtsEncryptor<KeyLength, TweakHandler>::EncryptData(void* pO
     }
 
     /* Return */
-    return crypto::AesResult::Success;
+    return AesResult::Success;
 }
 
-template class AesXtsEncryptor<128, crypto::detail::AesXtsTweakHandler<128>>;
-template class AesXtsEncryptor<192, crypto::detail::AesXtsTweakHandler<192>>;
-template class AesXtsEncryptor<256, crypto::detail::AesXtsTweakHandler<256>>;
+template class AesXtsEncryptor<128, detail::AesXtsTweakHandler<128>>;
+template class AesXtsEncryptor<192, detail::AesXtsTweakHandler<192>>;
+template class AesXtsEncryptor<256, detail::AesXtsTweakHandler<256>>;
 
-template class AesXtsEncryptor<128, crypto::detail::AesXtsNTweakHandler<128>>;
-template class AesXtsEncryptor<192, crypto::detail::AesXtsNTweakHandler<192>>;
-template class AesXtsEncryptor<256, crypto::detail::AesXtsNTweakHandler<256>>;
+template class AesXtsEncryptor<128, detail::AesXtsNTweakHandler<128>>;
+template class AesXtsEncryptor<192, detail::AesXtsNTweakHandler<192>>;
+template class AesXtsEncryptor<256, detail::AesXtsNTweakHandler<256>>;
 
 } // namespace crypto

@@ -17,7 +17,7 @@ public:
     void SetupTweak(void* pOut, size_t curSector, size_t sectAddr);
 
 private:
-    std::unique_ptr<crypto::detail::IAesEncryptor<KeyLength>> m_pEncryptor;
+    std::unique_ptr<IAesEncryptor<KeyLength>> m_pEncryptor;
 };
 
 } // namespace detail

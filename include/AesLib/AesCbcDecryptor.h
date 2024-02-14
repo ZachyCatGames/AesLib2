@@ -10,7 +10,7 @@ template<int KeyLength>
 class AesCbcDecryptor {
 public:
     static constexpr int KeySize = KeyLength / 8;
-    static constexpr int IvSize = crypto::AesBlockLength;
+    static constexpr int IvSize = AesBlockLength;
 
 public:
     AesCbcDecryptor();
@@ -22,10 +22,10 @@ public:
 
 public:
     /* CBC Decrypt Data */
-    crypto::AesResult DecryptData(void* pOut, size_t outSize, const void* pIn, size_t size);
+    AesResult DecryptData(void* pOut, size_t outSize, const void* pIn, size_t size);
 
 private:
-    std::unique_ptr<crypto::detail::IAesDecryptor<KeyLength>> m_pDecryptor;
+    std::unique_ptr<detail::IAesDecryptor<KeyLength>> m_pDecryptor;
     uint8_t m_AesIv[16];
 };
 

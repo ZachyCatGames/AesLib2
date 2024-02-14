@@ -20,10 +20,10 @@ public:
     void Initialize(const void* pKey1, size_t key1Size, const void* pKey2, size_t key2Size, size_t sectSize);
     void Finalize();
 
-    crypto::AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr);
+    AesResult EncryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize, ptrdiff_t addr);
 
 private:
-    std::unique_ptr<crypto::detail::IAesEncryptor<KeyLength>> m_pEncryptor;
+    std::unique_ptr<detail::IAesEncryptor<KeyLength>> m_pEncryptor;
     TweakHandler m_TweakHandler;
     size_t m_SectorSize;
 };

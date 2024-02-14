@@ -20,7 +20,7 @@ AesDecryptImpl<KeyLength>::~AesDecryptImpl() = default;
 template<int KeyLength>
 void AesDecryptImpl<KeyLength>::Initialize(const void* pKey, size_t keySize) {
     std::memcpy(m_RoundKeys, pKey, KeySize);
-    crypto::detail::AesExpandKeyImpl<KeyLength>(m_RoundKeys);
+    AesExpandKeyImpl<KeyLength>(m_RoundKeys);
 
     /* Inverse keys. */
     for(int i = 4; i < m_KeyWordCount - 4; ++i) {
@@ -52,7 +52,7 @@ void AesDecryptImpl<KeyLength>::DecryptBlock(void* pOut, const void* pIn) {
         pOut32[1] = T_TableInv0[tmp[1] & 0xFF] ^ T_TableInv1[tmp[0] >> 8 & 0xFF] ^ T_TableInv2[tmp[3] >> 16 & 0xFF] ^ T_TableInv3[tmp[2] >> 24] ^ m_RoundKeys[round * 4 + 1];
         pOut32[2] = T_TableInv0[tmp[2] & 0xFF] ^ T_TableInv1[tmp[1] >> 8 & 0xFF] ^ T_TableInv2[tmp[0] >> 16 & 0xFF] ^ T_TableInv3[tmp[3] >> 24] ^ m_RoundKeys[round * 4 + 2];
         pOut32[3] = T_TableInv0[tmp[3] & 0xFF] ^ T_TableInv1[tmp[2] >> 8 & 0xFF] ^ T_TableInv2[tmp[1] >> 16 & 0xFF] ^ T_TableInv3[tmp[0] >> 24] ^ m_RoundKeys[round * 4 + 3];
-        std::memcpy(tmp, pOut, crypto::AesBlockLength);
+        std::memcpy(tmp, pOut, AesBlockLength);
     }
 
     tmp[0] = inv_s[pOut32[0] & 0xFF] |

@@ -10,7 +10,7 @@ template<int KeyLength>
 class AesCtr {
 public:
     static constexpr int KeySize = KeyLength / 8;
-    static constexpr int CtrSize = crypto::AesBlockLength;
+    static constexpr int CtrSize = AesBlockLength;
 
 public:
     AesCtr();
@@ -24,13 +24,13 @@ public:
     void SetCounter(const void* pCtr, size_t ctrSize);
 
     /* CTR Crypt Block */
-    crypto::AesResult CryptBlock(void* pOut, const void* pIn);
+    AesResult CryptBlock(void* pOut, const void* pIn);
 
     /* CTR Crypt Data */
-    crypto::AesResult CryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
+    AesResult CryptData(void* pOut, size_t outSize, const void* pIn, size_t inSize);
 
 private:
-    std::unique_ptr<crypto::detail::IAesEncryptor<KeyLength>> m_pEncryptor;
+    std::unique_ptr<detail::IAesEncryptor<KeyLength>> m_pEncryptor;
     uint8_t m_AesCounter[16];
 };
 

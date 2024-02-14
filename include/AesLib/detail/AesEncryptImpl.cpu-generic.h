@@ -7,7 +7,7 @@ namespace crypto {
 namespace detail {
 
 template<int KeyLength>
-class AesEncryptImpl : public crypto::detail::IAesEncryptor<KeyLength> {
+class AesEncryptImpl : public IAesEncryptor<KeyLength> {
 public:
     static constexpr int KeySize = KeyLength / 8;
 

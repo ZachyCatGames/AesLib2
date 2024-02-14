@@ -34,4 +34,4 @@ enum class AesResult {
     OutTooSmall
 };
 
-}
+} // namespace crypto
