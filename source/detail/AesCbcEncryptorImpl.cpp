@@ -1,7 +1,6 @@
 #include <AesLib/detail/AesCbcEncryptorImpl.h>
 #include <AesLib/detail/AesXorBlock128.h>
 #include <AesLib/detail/AesImplBuilder.h>
-#include <cassert>
 
 namespace crypto {
 namespace detail {
